@@ -1,9 +1,21 @@
-function App() {
-  return (
-    <div className="App">
-      <h> Implementing GET</h>
-    </div>
-  );
-}
+import React from "react";
+// import axios from "axios";
 
-export default App;
+// const getData = async () =>{
+//   try{
+//     return await axios.get("/");
+//   }catch (err){
+//     console.log(err)
+//   }
+// };
+
+// function App() {
+//   const data = getData();
+//   return (
+//     <div className="App">
+//       <b>{data}</b>
+//     </div>
+//   );
+// }
+
+// export default App;
