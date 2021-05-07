@@ -91,19 +91,19 @@ app.post("/signup", (req, res) => {
 
 //Authentication should be done.
 //(1)check our User collection
-app.post("/login", (req, res) => {
-  User.findOne(
-    { email: req.body.email }, //dummy data
-    async (err, doc) => {
-      if (err) throw err;
-      if (!doc) res.send("User does not exist");
-      if (doc) {
-        req.session.userInfo = doc;
-        res.send(doc);
-      }
-    }
-  );
-});
+// app.post("/login", (req, res) => {
+//   User.findOne(
+//     { email: req.body.email }, //dummy data
+//     async (err, doc) => {
+//       if (err) throw err;
+//       if (!doc) res.send("User does not exist");
+//       if (doc) {
+//         req.session.userInfo = doc;
+//         res.send(doc);
+//       }
+//     }
+//   );
+// });
 
 // or (2) using passport
 app.post("/login", (req, res, next) => {
@@ -134,6 +134,6 @@ app.get("/", (req, res) => {
 // console.log(doc);
 
 // This code starts the express server
-app.listen(4000, () => {
+app.listen(process.env.PORT || 4000, () => {
   console.log("Server started successfully");
 });
