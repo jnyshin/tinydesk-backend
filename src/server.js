@@ -8,6 +8,7 @@ const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const app = express();
+
 const User = require("./schemas/user");
 
 mongoose.connect(
@@ -47,21 +48,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 require("./passportConfig")(passport);
 
-// Routes
-app.post("/login", (req, res, next) => {
-  passport.authenticate("local", (err, user, info) => {
-    if (err) throw err;
-    if (!user) res.send("No User Exists");
-    else {
-      req.logIn(user, (err) => {
-        if (err) throw err;
-        res.send("Successfully Authenticated");
-        console.log(req.user);
-      });
-    }
-  })(req, res, next);
-});
-
 const initialLocation = {
   id: 1843564,
   name: "Incheon",
@@ -73,6 +59,7 @@ const initialLocation = {
   },
 };
 
+// Routes
 app.post("/signup", (req, res) => {
   User.findOne({ email: req.body.email }, async (err, doc) => {
     if (err) throw err;
@@ -102,35 +89,45 @@ app.post("/signup", (req, res) => {
   });
 });
 
+// app.post("/login", (req, res, next) => {
+//   passport.authenticate("local", (err, user, info) => {
+//     if (err) throw err;
+//     if (!user) res.send("No User Exists");
+//     else {
+//       req.logIn(user, (err) => {
+//         if (err) throw err;
+//         res.send("Successfully Authenticated");
+//         console.log(req.user);
+//       });
+//     }
+//   })(req, res, next);
+// });
+
 //query is not working properly.
-app.post("/login", (req, res) => {
+app.get("/login", (req, res) => {
   User.findOne(
-    { email: req.body.email, password: bcrypt.hash(req.body.password, 10) },
+    { email: req.body.email, password: bcrypt.hash(req.body.password, 10) }, //dummy data
     async (err, doc) => {
       if (err) throw err;
       if (!doc) res.send("User does not exist");
       if (doc) {
-        res.send(doc, "Logged in successfully");
-        console.log(doc);
+        req.session.userInfo = doc;
+        res.redirect("/home");
       }
     }
   );
 });
 
 //this query works now
-app.get("/", (req, res) => {
-  User.findOne(
-    { email: "amy12345@gmail.com", password: "1234" },
-    async (err, doc) => {
-      if (err) throw err;
-      if (doc) res.send(doc); //doc is a JSON object itself
-      if (!doc) {
-        res.send("User is not found");
-      }
-    }
-  );
+app.get("/home", (req, res) => {
+  const userInfo = req.session.userInfo;
+  req.session.userInfo = null; //reset session variable after
+  res.send(userInfo);
 });
 
+app.get("/", (req, res) => {
+  res.send("Connected");
+});
 // const doc = User.find({ email: "amy12345@gmail.com", password: "1234" });
 // console.log(doc);
 
