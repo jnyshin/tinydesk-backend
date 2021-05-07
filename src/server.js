@@ -91,47 +91,56 @@ app.post("/signup", (req, res) => {
 
 //Authentication should be done.
 //(1)check our User collection
-// app.post("/login", (req, res) => {
-//   User.findOne(
-//     { email: req.body.email }, //dummy data
-//     async (err, doc) => {
-//       if (err) throw err;
-//       if (!doc) res.send("User does not exist");
-//       if (doc) {
-//         req.session.userInfo = doc;
-//         res.send(doc);
-//       }
-//     }
-//   );
-// });
+app.post("/login", (req, res) => {
+  User.findOne(
+    { email: req.body.email }, //dummy data
+    async (err, doc) => {
+      if (err) throw err;
+      if (!doc) res.send("User does not exist");
+      if (doc) {
+        req.session.userInfo = doc;
+        res.send(doc);
+      }
+    }
+  );
+});
 
 // or (2) using passport
-app.post("/login", (req, res, next) => {
-  passport.authenticate("local", (err, user, info) => {
-    if (err) throw err;
-    if (!user) res.send("No User Exists");
-    else {
-      req.logIn(user, (err) => {
-        if (err) throw err;
-        res.send("Successfully Authenticated");
-        console.log(req.user);
-      });
-    }
-  })(req, res, next);
-});
+// app.post("/login", (req, res, next) => {
+//   passport.authenticate("local", (err, user, info) => {
+//     if (err) throw err;
+//     if (!user) res.send("No User Exists");
+//     else {
+//       req.logIn(user, (err) => {
+//         if (err) throw err;
+//         res.send("Successfully Authenticated");
+//         console.log(req.user);
+//       });
+//     }
+//   })(req, res, next);
+// });
 
 //this query works now
 app.get("/home", (req, res) => {
   const userInfo = req.session.userInfo;
   req.session.userInfo = null; //reset session variable after
-  res.send(userInfo);
+  //res.send(userInfo);
+  res.send("This page should be our Command T homepage");
 });
 
 app.get("/", (req, res) => {
-  res.send("Connected");
+  res.send(
+    "Hi, we are Team KGB! This website is for our web application, Command T."
+  );
 });
-// const doc = User.find({ email: "amy12345@gmail.com", password: "1234" });
-// console.log(doc);
+
+app.get("/login", (req, res) => {
+  res.send("This is Command T Log in page");
+});
+
+app.get("/signup", (req, res) => {
+  res.send("This is Command T Sign Up page");
+});
 
 // This code starts the express server
 app.listen(process.env.PORT || 4000, () => {
