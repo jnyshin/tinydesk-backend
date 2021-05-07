@@ -89,33 +89,35 @@ app.post("/signup", (req, res) => {
   });
 });
 
-// app.post("/login", (req, res, next) => {
-//   passport.authenticate("local", (err, user, info) => {
-//     if (err) throw err;
-//     if (!user) res.send("No User Exists");
-//     else {
-//       req.logIn(user, (err) => {
-//         if (err) throw err;
-//         res.send("Successfully Authenticated");
-//         console.log(req.user);
-//       });
-//     }
-//   })(req, res, next);
-// });
-
-//query is not working properly.
-app.get("/login", (req, res) => {
+//Authentication should be done.
+//(1)check our User collection
+app.post("/login", (req, res) => {
   User.findOne(
-    { email: req.body.email, password: bcrypt.hash(req.body.password, 10) }, //dummy data
+    { email: req.body.email }, //dummy data
     async (err, doc) => {
       if (err) throw err;
       if (!doc) res.send("User does not exist");
       if (doc) {
         req.session.userInfo = doc;
-        res.redirect("/home");
+        res.send(doc);
       }
     }
   );
+});
+
+// or (2) using passport
+app.post("/login", (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) throw err;
+    if (!user) res.send("No User Exists");
+    else {
+      req.logIn(user, (err) => {
+        if (err) throw err;
+        res.send("Successfully Authenticated");
+        console.log(req.user);
+      });
+    }
+  })(req, res, next);
 });
 
 //this query works now
