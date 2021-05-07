@@ -134,6 +134,6 @@ app.get("/", (req, res) => {
 // console.log(doc);
 
 // This code starts the express server
-app.listen(4000, () => {
+app.listen(process.env.PORT || 4000, () => {
   console.log("Server started successfully");
 });
