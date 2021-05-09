@@ -122,6 +122,8 @@ app.get("/home", (req, res) => {
 });
 
 // Alternative you might want to do something like this, Yejin
+// Also, see the code on lines 27 - 34 of the master branch in the
+// front end repo to see the front end interacting with this part of the API
 
 // app.get("/home", (req, res) => {
 //   req.send(req.user);
