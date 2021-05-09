@@ -7,8 +7,7 @@ const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const app = express();
-const flash = require('connect-flash');
-
+const flash = require("connect-flash");
 
 const User = require("./schemas/user");
 
@@ -122,26 +121,24 @@ app.post("/signup", (req, res) => {
 //     }
 //   })(req, res, next);
 // });
-
-//sije
 app.post("/login", (req, res, next) => {
-  passport.authenticate('local', (authError, user, info) => {
-    if(authError){
-      console.error(authError)
-      return next(loginError);
+  passport.authenticate("local", (authError, user, info) => {
+    if (authError) {
+      console.error(authError);
+      return next(authError);
     }
-    if(!user){
-      req.flash('loginError',info.message);
-      return res.send(info.message)
+    if (!user) {
+      req.flash("loginError", info.message);
+      return res.send(info.message);
     }
-    return req.login(user,(loginError) =>{
-      if(loginError){
+    return req.login(user, (loginError) => {
+      if (loginError) {
         console.error(loginError);
         return next(loginError);
       }
-    res.send("Successfully Authenticated");
-  });
-})(req,res,next);
+      res.send("Successfully Authenticated");
+    });
+  })(req, res, next);
 });
 
 //this query works now

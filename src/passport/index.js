@@ -1,7 +1,5 @@
 const User = require("../schemas/user");
-const bcrypt = require("bcryptjs");
-const local = require('./localStrategy');
-
+const local = require("./localStrategy.js");
 
 module.exports = function (passport) {
   passport.serializeUser((user, cb) => {
@@ -15,4 +13,3 @@ module.exports = function (passport) {
   });
   local(passport);
 };
-
