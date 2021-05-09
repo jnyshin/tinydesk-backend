@@ -2,17 +2,19 @@ const mongoose = require("mongoose");
 const express = require("express");
 const cors = require("cors");
 const passport = require("passport");
-const passportLocal = require("passport-local").Strategy;
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const app = express();
+const flash = require('connect-flash');
+
 
 const User = require("./schemas/user");
 
 mongoose.connect(
   "mongodb+srv://yejin:Jnysh1nE%23@commandtbackend.4toiz.mongodb.net/commandTMainDev?retryWrites=true&w=majority",
+  // "mongodb://localhost:27017/test",
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -42,11 +44,12 @@ app.use(
 );
 
 app.use(cookieParser("unicorncode"));
-
+app.use(flash());
 // Initialize Passport
+const passportConfig = require("./passport");
+passportConfig(passport);
 app.use(passport.initialize());
 app.use(passport.session());
-require("./passportConfig")(passport);
 
 const initialLocation = {
   id: 1843564,
@@ -91,19 +94,19 @@ app.post("/signup", (req, res) => {
 
 //Authentication should be done.
 //(1)check our User collection
-app.post("/login", (req, res) => {
-  User.findOne(
-    { email: req.body.email }, //dummy data
-    async (err, doc) => {
-      if (err) throw err;
-      if (!doc) res.send("User does not exist");
-      if (doc) {
-        req.session.userInfo = doc;
-        res.send(doc);
-      }
-    }
-  );
-});
+// app.post("/login", (req, res) => {
+//   User.findOne(
+//     { email: req.body.email }, //dummy data
+//     async (err, doc) => {
+//       if (err) throw err;
+//       if (!doc) res.send("User does not exist");
+//       if (doc) {
+//         req.session.userInfo = doc;
+//         res.send(doc);
+//       }
+//     }
+//   );
+// });
 
 // or (2) using passport
 // app.post("/login", (req, res, next) => {
@@ -119,6 +122,27 @@ app.post("/login", (req, res) => {
 //     }
 //   })(req, res, next);
 // });
+
+//sije
+app.post("/login", (req, res, next) => {
+  passport.authenticate('local', (authError, user, info) => {
+    if(authError){
+      console.error(authError)
+      return next(loginError);
+    }
+    if(!user){
+      req.flash('loginError',info.message);
+      return res.send(info.message)
+    }
+    return req.login(user,(loginError) =>{
+      if(loginError){
+        console.error(loginError);
+        return next(loginError);
+      }
+    res.send("Successfully Authenticated");
+  });
+})(req,res,next);
+});
 
 //this query works now
 app.get("/home", (req, res) => {
