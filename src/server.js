@@ -42,7 +42,7 @@ app.use(
   })
 );
 
-app.use(cookieParser("unicorncode"));
+app.use(cookieParser("unicorncookie"));
 app.use(flash());
 // Initialize Passport
 const passportConfig = require("./passport");
@@ -91,36 +91,6 @@ app.post("/signup", (req, res) => {
   });
 });
 
-//Authentication should be done.
-//(1)check our User collection
-// app.post("/login", (req, res) => {
-//   User.findOne(
-//     { email: req.body.email }, //dummy data
-//     async (err, doc) => {
-//       if (err) throw err;
-//       if (!doc) res.send("User does not exist");
-//       if (doc) {
-//         req.session.userInfo = doc;
-//         res.send(doc);
-//       }
-//     }
-//   );
-// });
-
-// or (2) using passport
-// app.post("/login", (req, res, next) => {
-//   passport.authenticate("local", (err, user, info) => {
-//     if (err) throw err;
-//     if (!user) res.send("No User Exists");
-//     else {
-//       req.logIn(user, (err) => {
-//         if (err) throw err;
-//         res.send("Successfully Authenticated");
-//         console.log(req.user);
-//       });
-//     }
-//   })(req, res, next);
-// });
 app.post("/login", (req, res, next) => {
   passport.authenticate("local", (authError, user, info) => {
     if (authError) {
@@ -141,6 +111,8 @@ app.post("/login", (req, res, next) => {
   })(req, res, next);
 });
 
+
+
 //this query works now
 app.get("/home", (req, res) => {
   const userInfo = req.session.userInfo;
@@ -149,19 +121,52 @@ app.get("/home", (req, res) => {
   res.send("This page should be our Command T homepage");
 });
 
+// Alternative you might want to do something like this, Yejin
+
+// app.get("/home", (req, res) => {
+//   req.send(req.user);
+// });
+
 app.get("/", (req, res) => {
   res.send(
     "Hi, we are Team KGB! This website is for our web application, Command T."
   );
 });
 
-app.get("/login", (req, res) => {
-  res.send("This is Command T Log in page");
+app.post("/login", (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) throw err;
+    if (!user) res.send("No User Exists");
+    else {
+      req.logIn(user, (err) => {
+        if (err) throw err;
+        res.send("Successfully Authenticated");
+        console.log(req.user);
+      });
+    }
+  })(req, res, next);
 });
 
-app.get("/signup", (req, res) => {
-  res.send("This is Command T Sign Up page");
+app.post("/signup", (req, res) => {
+  User.findOne({ email: req.body.email }, async (err, doc) => {
+    if (err) throw err;
+    if (doc) res.send("user Already Exists");
+    if (!doc) {
+      const hashedPassword = await bcrypt.hash(req.body.password, 10);
+
+      const newUser = new User({
+        name: req.body.name,
+        username: req.body.username,
+        email: req.body.email,
+        password: hashedPassword,
+        location: req.body.location,
+      });
+      await newUser.save();
+      res.send("User Created");
+    }
+  });
 });
+
 
 // This code starts the express server
 app.listen(process.env.PORT || 4000, () => {
