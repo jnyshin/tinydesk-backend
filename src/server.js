@@ -13,18 +13,9 @@ const User = require("./schemas/user");
 const Folder = require("./schemas/folder_db");
 const Note = require("./schemas/notes_db");
 const Todolist = require("./schemas/todolist_db");
+const Bookmark = require("./schemas/bookmark_db");
+const Todo = require("./schemas/todo_db");
 
-// mongoose.connect(
-//   "mongodb+srv://yejin:teamkgb@commandtbackend.4toiz.mongodb.net/commandTMainDev?retryWrites=true&w=majority",
-//   // "mongodb://localhost:27017/test",
-//   {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//   },
-//   () => {
-//     console.log("Mongoose Is Connected!");
-//   }
-// );
 mongoose
   .connect(
     "mongodb+srv://yejin:teamkgb@commandtbackend.4toiz.mongodb.net/commandTMainDev?retryWrites=true&w=majority",
@@ -75,11 +66,29 @@ app.post("/signup", (req, res) => {
     if (doc) res.send("user Already Exists");
     if (!doc) {
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      //make an initial bookmark
+      const newBookmark = new Bookmark({
+        title: "Command T Repository",
+        url: "https://github.com/janarosmonaliev/project-416",
+        color: "green",
+        thumbnail:
+          "https://github.githubassets.com/apple-touch-icon-180x180.png",
+      });
+      await newBookmark.save();
+      //make initial todo
+      const newTodo = new Todo({ title: "New Todo", isComplete: false });
+      await newTodo.save();
       //make an initial folder
-      const newFolder = new Folder({ title: "New Folder", bookmarks: [] });
+      const newFolder = new Folder({
+        title: "New Folder",
+        bookmarks: [newBookmark._id],
+      });
       await newFolder.save();
       //make an initial todolist
-      const newTodolist = new Todolist({ title: "New Todolist", todos: [] });
+      const newTodolist = new Todolist({
+        title: "New Todolist",
+        todos: [newTodo._id],
+      });
       await newTodolist.save();
       //make an initial note
       const newNote = new Note({
@@ -110,14 +119,6 @@ app.post("/signup", (req, res) => {
   });
 });
 
-// Alternative you might want to do something like this, Yejin
-// Also, see the code on lines 27 - 34 of the master branch in the
-// front end repo to see the front end interacting with this part of the API
-
-// app.get("/home", (req, res) => {
-//   req.send(req.user);
-// });
-
 app.get("/", (req, res) => {
   res.send(
     "Hi, we are Team KGB! This website is for our web application, Command T."
@@ -141,9 +142,20 @@ app.post("/login", (req, res, next) => {
 app.get("/home", (req, res) => {
   const tmp = req.session.userInfo;
   User.findOne({ email: tmp.email })
-    .populate("folders")
+    .populate({
+      path: "folders",
+      model: "Folder",
+      populate: {
+        path: "bookmarks",
+        model: "Bookmark",
+      },
+    })
     .populate("notes")
-    .populate("todolists")
+    .populate({
+      path: "todolists",
+      model: "Todolist",
+      populate: { path: "todos", model: "Todo" },
+    })
     .exec((err, doc) => {
       if (err) throw err;
       if (doc) {
@@ -151,16 +163,6 @@ app.get("/home", (req, res) => {
         res.send(doc);
       }
     });
-  // User.populate(tmp, ["folders", "notes"]).exec((err, doc) => {
-  //   if (err) throw err;
-  //   if (doc) {
-  //     console.log(doc);
-  //     res.send(doc);
-  //   }
-  // });
-  //req.ression.userInfo = null;
-  //const populatedOne = tmp.populate("folders").exec();
-  //console.log("Check whether we have the right one: ", tmp);
 });
 
 // This code starts the express server
