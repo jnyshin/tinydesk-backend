@@ -12,7 +12,7 @@ const flash = require("connect-flash");
 const User = require("./schemas/user");
 
 mongoose.connect(
-  "mongodb+srv://yejin:Jnysh1nE%23@commandtbackend.4toiz.mongodb.net/commandTMainDev?retryWrites=true&w=majority",
+  "mongodb+srv://yejin:teamkgb@commandtbackend.4toiz.mongodb.net/commandTMainDev?retryWrites=true&w=majority",
   // "mongodb://localhost:27017/test",
   {
     useNewUrlParser: true,
@@ -91,36 +91,6 @@ app.post("/signup", (req, res) => {
   });
 });
 
-app.post("/login", (req, res, next) => {
-  passport.authenticate("local", (authError, user, info) => {
-    if (authError) {
-      console.error(authError);
-      return next(authError);
-    }
-    if (!user) {
-      req.flash("loginError", info.message);
-      return res.send(info.message);
-    }
-    return req.login(user, (loginError) => {
-      if (loginError) {
-        console.error(loginError);
-        return next(loginError);
-      }
-      res.send("Successfully Authenticated");
-    });
-  })(req, res, next);
-});
-
-
-
-//this query works now
-app.get("/home", (req, res) => {
-  const userInfo = req.session.userInfo;
-  req.session.userInfo = null; //reset session variable after
-  //res.send(userInfo);
-  res.send("This page should be our Command T homepage");
-});
-
 // Alternative you might want to do something like this, Yejin
 // Also, see the code on lines 27 - 34 of the master branch in the
 // front end repo to see the front end interacting with this part of the API
@@ -142,33 +112,21 @@ app.post("/login", (req, res, next) => {
     else {
       req.logIn(user, (err) => {
         if (err) throw err;
+        req.session.userInfo = req.user;
         res.send("Successfully Authenticated");
-        console.log(req.user);
+        //console.log(req.user);
       });
     }
   })(req, res, next);
 });
 
-app.post("/signup", (req, res) => {
-  User.findOne({ email: req.body.email }, async (err, doc) => {
-    if (err) throw err;
-    if (doc) res.send("user Already Exists");
-    if (!doc) {
-      const hashedPassword = await bcrypt.hash(req.body.password, 10);
-
-      const newUser = new User({
-        name: req.body.name,
-        username: req.body.username,
-        email: req.body.email,
-        password: hashedPassword,
-        location: req.body.location,
-      });
-      await newUser.save();
-      res.send("User Created");
-    }
-  });
+app.get("/home", (req, res) => {
+  const userInfo = req.session.userInfo;
+  console.log("Info from sign in or log in: ", userInfo);
+  req.session.userInfo = null; //reset session variable after
+  //res.send(userInfo);
+  res.send("This page should be our Command T homepage");
 });
-
 
 // This code starts the express server
 app.listen(process.env.PORT || 4000, () => {
