@@ -10,18 +10,33 @@ const app = express();
 const flash = require("connect-flash");
 
 const User = require("./schemas/user");
-
-mongoose.connect(
-  "mongodb+srv://yejin:Jnysh1nE%23@commandtbackend.4toiz.mongodb.net/commandTMainDev?retryWrites=true&w=majority",
-  // "mongodb://localhost:27017/test",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  },
-  () => {
+const Folder = require("./schemas/folder_db");
+// mongoose.connect(
+//   "mongodb+srv://yejin:teamkgb@commandtbackend.4toiz.mongodb.net/commandTMainDev?retryWrites=true&w=majority",
+//   // "mongodb://localhost:27017/test",
+//   {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//   },
+//   () => {
+//     console.log("Mongoose Is Connected!");
+//   }
+// );
+mongoose
+  .connect(
+    "mongodb+srv://yejin:teamkgb@commandtbackend.4toiz.mongodb.net/commandTMainDev?retryWrites=true&w=majority",
+    // "mongodb://localhost:27017/test",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
+  .then((x) => {
     console.log("Mongoose Is Connected!");
-  }
-);
+  })
+  .catch((err) => {
+    console.error("Failed to connect with MongoDB", err);
+  });
 
 //Some necessary code
 app.use(bodyParser.json());
@@ -50,17 +65,6 @@ passportConfig(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 
-const initialLocation = {
-  id: 1843564,
-  name: "Incheon",
-  state: "",
-  country: "KR",
-  coord: {
-    lon: 126.731667,
-    lat: 37.453609,
-  },
-};
-
 // Routes
 app.post("/signup", (req, res) => {
   User.findOne({ email: req.body.email }, async (err, doc) => {
@@ -68,13 +72,16 @@ app.post("/signup", (req, res) => {
     if (doc) res.send("user Already Exists");
     if (!doc) {
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      const newFolder = new Folder({ title: "New Folder", bookmarks: [] });
+      await newFolder.save();
+      console.log(newFolder);
       const newUser = new User({
         email: req.body.email,
-        location: initialLocation,
+        location: req.body.city,
         password: hashedPassword,
         notes: [],
         todolists: [],
-        folders: [],
+        folders: [newFolder.id],
         backgroundImg: {
           unsplashID: "pic1",
           url:
@@ -91,29 +98,6 @@ app.post("/signup", (req, res) => {
   });
 });
 
-//Fabio's Auth
-app.post("/login", (req, res, next) => {
-  passport.authenticate("local", (err, user, info) => {
-    if (err) throw err;
-    if (!user) res.send("No User Exists");
-    else {
-      req.logIn(user, (err) => {
-        if (err) throw err;
-        res.send("Successfully Authenticated");
-        console.log(req.user);
-      });
-    }
-  })(req, res, next);
-});
-
-//this query works now
-app.get("/home", (req, res) => {
-  const userInfo = req.session.userInfo;
-  req.session.userInfo = null; //reset session variable after
-  //res.send(userInfo);
-  res.send("This page should be our Command T homepage");
-});
-
 // Alternative you might want to do something like this, Yejin
 // Also, see the code on lines 27 - 34 of the master branch in the
 // front end repo to see the front end interacting with this part of the API
@@ -126,6 +110,24 @@ app.get("/", (req, res) => {
   res.send(
     "Hi, we are Team KGB! This website is for our web application, Command T."
   );
+});
+
+app.post("/login", (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) throw err;
+    if (!user) res.send("No User Exists");
+    else {
+      req.logIn(user, (err) => {
+        if (err) throw err;
+        req.session.userInfo = req.user;
+        res.send("Successfully Authenticated");
+      });
+    }
+  })(req, res, next);
+});
+
+app.get("/home", (req, res) => {
+  res.send(req.session.userInfo);
 });
 
 // This code starts the express server
