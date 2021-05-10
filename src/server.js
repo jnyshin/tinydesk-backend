@@ -10,18 +10,33 @@ const app = express();
 const flash = require("connect-flash");
 
 const User = require("./schemas/user");
-
-mongoose.connect(
-  "mongodb+srv://yejin:teamkgb@commandtbackend.4toiz.mongodb.net/commandTMainDev?retryWrites=true&w=majority",
-  // "mongodb://localhost:27017/test",
-  {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  },
-  () => {
+const Folder = require("./schemas/folder_db");
+// mongoose.connect(
+//   "mongodb+srv://yejin:teamkgb@commandtbackend.4toiz.mongodb.net/commandTMainDev?retryWrites=true&w=majority",
+//   // "mongodb://localhost:27017/test",
+//   {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
+//   },
+//   () => {
+//     console.log("Mongoose Is Connected!");
+//   }
+// );
+mongoose
+  .connect(
+    "mongodb+srv://yejin:teamkgb@commandtbackend.4toiz.mongodb.net/commandTMainDev?retryWrites=true&w=majority",
+    // "mongodb://localhost:27017/test",
+    {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    }
+  )
+  .then((x) => {
     console.log("Mongoose Is Connected!");
-  }
-);
+  })
+  .catch((err) => {
+    console.error("Failed to connect with MongoDB", err);
+  });
 
 //Some necessary code
 app.use(bodyParser.json());
@@ -50,17 +65,6 @@ passportConfig(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 
-const initialLocation = {
-  id: 1843564,
-  name: "Incheon",
-  state: "",
-  country: "KR",
-  coord: {
-    lon: 126.731667,
-    lat: 37.453609,
-  },
-};
-
 // Routes
 app.post("/signup", (req, res) => {
   User.findOne({ email: req.body.email }, async (err, doc) => {
@@ -68,13 +72,16 @@ app.post("/signup", (req, res) => {
     if (doc) res.send("user Already Exists");
     if (!doc) {
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      const newFolder = new Folder({ title: "New Folder", bookmarks: [] });
+      await newFolder.save();
+      console.log(newFolder);
       const newUser = new User({
         email: req.body.email,
-        location: initialLocation,
+        location: req.body.city,
         password: hashedPassword,
         notes: [],
         todolists: [],
-        folders: [],
+        folders: [newFolder.id],
         backgroundImg: {
           unsplashID: "pic1",
           url:
