@@ -114,18 +114,13 @@ app.post("/login", (req, res, next) => {
         if (err) throw err;
         req.session.userInfo = req.user;
         res.send("Successfully Authenticated");
-        //console.log(req.user);
       });
     }
   })(req, res, next);
 });
 
 app.get("/home", (req, res) => {
-  const userInfo = req.session.userInfo;
-  console.log("Info from sign in or log in: ", userInfo);
-  req.session.userInfo = null; //reset session variable after
-  //res.send(userInfo);
-  res.send("This page should be our Command T homepage");
+  res.send(req.session.userInfo);
 });
 
 // This code starts the express server
