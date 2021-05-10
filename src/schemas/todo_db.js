@@ -5,4 +5,4 @@ const todo_db = new mongoose.Schema({
   isComplete: Boolean,
 });
 
-module.exports = mongoose.model("Todo_db", todo_db);
+module.exports = mongoose.model("Todo", todo_db);

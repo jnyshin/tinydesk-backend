@@ -11,6 +11,9 @@ const flash = require("connect-flash");
 
 const User = require("./schemas/user");
 const Folder = require("./schemas/folder_db");
+const Note = require("./schemas/notes_db");
+const Todolist = require("./schemas/todolist_db");
+
 // mongoose.connect(
 //   "mongodb+srv://yejin:teamkgb@commandtbackend.4toiz.mongodb.net/commandTMainDev?retryWrites=true&w=majority",
 //   // "mongodb://localhost:27017/test",
@@ -72,16 +75,25 @@ app.post("/signup", (req, res) => {
     if (doc) res.send("user Already Exists");
     if (!doc) {
       const hashedPassword = await bcrypt.hash(req.body.password, 10);
+      //make an initial folder
       const newFolder = new Folder({ title: "New Folder", bookmarks: [] });
       await newFolder.save();
-      console.log(newFolder);
+      //make an initial todolist
+      const newTodolist = new Todolist({ title: "New Todolist", todos: [] });
+      await newTodolist.save();
+      //make an initial note
+      const newNote = new Note({
+        title: "New Npte",
+        content: "Welcome to Command T!",
+      });
+      await newNote.save();
       const newUser = new User({
         email: req.body.email,
         location: req.body.city,
         password: hashedPassword,
-        notes: [],
-        todolists: [],
-        folders: [newFolder.id],
+        notes: [newNote._id],
+        todolists: [newTodolist._id],
+        folders: [newFolder._id],
         backgroundImg: {
           unsplashID: "pic1",
           url:
@@ -127,7 +139,28 @@ app.post("/login", (req, res, next) => {
 });
 
 app.get("/home", (req, res) => {
-  res.send(req.session.userInfo);
+  const tmp = req.session.userInfo;
+  User.findOne({ email: tmp.email })
+    .populate("folders")
+    .populate("notes")
+    .populate("todolists")
+    .exec((err, doc) => {
+      if (err) throw err;
+      if (doc) {
+        console.log(doc);
+        res.send(doc);
+      }
+    });
+  // User.populate(tmp, ["folders", "notes"]).exec((err, doc) => {
+  //   if (err) throw err;
+  //   if (doc) {
+  //     console.log(doc);
+  //     res.send(doc);
+  //   }
+  // });
+  //req.ression.userInfo = null;
+  //const populatedOne = tmp.populate("folders").exec();
+  //console.log("Check whether we have the right one: ", tmp);
 });
 
 // This code starts the express server

@@ -7,4 +7,4 @@ const bookmark_db = new mongoose.Schema({
   thumbnail: String,
 });
 
-module.exports = mongoose.model("Bookmark_db", bookmark_db);
+module.exports = mongoose.model("Bookmark", bookmark_db);
