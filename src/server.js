@@ -91,27 +91,20 @@ app.post("/signup", (req, res) => {
   });
 });
 
+//Fabio's Auth
 app.post("/login", (req, res, next) => {
-  passport.authenticate("local", (authError, user, info) => {
-    if (authError) {
-      console.error(authError);
-      return next(authError);
+  passport.authenticate("local", (err, user, info) => {
+    if (err) throw err;
+    if (!user) res.send("No User Exists");
+    else {
+      req.logIn(user, (err) => {
+        if (err) throw err;
+        res.send("Successfully Authenticated");
+        console.log(req.user);
+      });
     }
-    if (!user) {
-      req.flash("loginError", info.message);
-      return res.send(info.message);
-    }
-    return req.login(user, (loginError) => {
-      if (loginError) {
-        console.error(loginError);
-        return next(loginError);
-      }
-      res.send("Successfully Authenticated");
-    });
   })(req, res, next);
 });
-
-
 
 //this query works now
 app.get("/home", (req, res) => {
@@ -134,41 +127,6 @@ app.get("/", (req, res) => {
     "Hi, we are Team KGB! This website is for our web application, Command T."
   );
 });
-
-app.post("/login", (req, res, next) => {
-  passport.authenticate("local", (err, user, info) => {
-    if (err) throw err;
-    if (!user) res.send("No User Exists");
-    else {
-      req.logIn(user, (err) => {
-        if (err) throw err;
-        res.send("Successfully Authenticated");
-        console.log(req.user);
-      });
-    }
-  })(req, res, next);
-});
-
-app.post("/signup", (req, res) => {
-  User.findOne({ email: req.body.email }, async (err, doc) => {
-    if (err) throw err;
-    if (doc) res.send("user Already Exists");
-    if (!doc) {
-      const hashedPassword = await bcrypt.hash(req.body.password, 10);
-
-      const newUser = new User({
-        name: req.body.name,
-        username: req.body.username,
-        email: req.body.email,
-        password: hashedPassword,
-        location: req.body.location,
-      });
-      await newUser.save();
-      res.send("User Created");
-    }
-  });
-});
-
 
 // This code starts the express server
 app.listen(process.env.PORT || 4000, () => {
