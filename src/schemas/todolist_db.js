@@ -1,8 +1,8 @@
 const mongoose = require("mongoose");
-const todolist_db = new mongoose.Schema({
+const todolist = new mongoose.Schema({
   // todolist title, array of Todos in the list
   title: String,
-  todos: Array,
+  todos: [{ type: mongoose.Schema.Types.ObjectId, ref: "Todo" }],
 });
 
-module.exports = mongoose.model("Todolist_db", todolist_db);
+module.exports = mongoose.model("Todolist", todolist);
