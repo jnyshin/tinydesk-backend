@@ -185,11 +185,17 @@ app.post("/home/folder", (req, res) => {
 app.delete("/home/folder", (req, res) => {
   const tmp = req.session.userInfo;
   const folderId = mongoose.Types.ObjectId("609aa2128380eb693b57ccb1");
+  Folder.deleteOne({ id: folderId }, async (err, doc) => {
+    if (err) throw err;
+    if (doc) console.log(doc);
+    Folder.save();
+  });
   User.updateOne({ _id: tmp._id }, { $pull: { folders: folderId } }).exec(
     (err, doc) => {
       if (err) throw err;
       if (doc) {
         User.save();
+        console.log("folder deleted");
         res.send(tmp.folders);
       }
     }
