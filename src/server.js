@@ -128,26 +128,27 @@ app.get("/", (req, res) => {
 });
 
 app.post("/login", (req, res, next) => {
-  // passport.authenticate("local", (err, user, info) => {
-  //   if (err) throw err;
-  //   if (!user) res.send("No User Exists");
-  //   else {
-  //     req.logIn(user, (err) => {
-  //       if (err) throw err;
-  //       req.session.userInfo = req.user;
-  //       res.send("Successfully Authenticated");
-  //     });
-  //   }
-  // })(req, res, next);
-
-  //This code is just to figure out the problem of Heroku connection. 
-  User.findOne({email: req.body.email}).exec((err, doc) =>{
+  passport.authenticate("local", (err, user, info) => {
     if (err) throw err;
-    if (doc) {
-      req.session.userInfo = doc;
-      res.send(doc);
+    if (!user) res.send("No User Exists");
+    else {
+      req.logIn(user, (err) => {
+        if (err) throw err;
+        req.session.userInfo = req.user;
+        res.send("Successfully Authenticated");
+      });
     }
-  })
+  })(req, res, next);
+
+  //This code is just to figure out the problem of Heroku connection.
+  // User.findOne({ email: req.body.email }, async (err, doc) => {
+  //   if (err) throw err;
+  //   if (doc) {
+  //     req.session.userInfo = doc;
+  //     res.send(doc);
+  //   }
+  // });
+});
 
 app.get("/home", (req, res) => {
   const tmp = req.session.userInfo;
