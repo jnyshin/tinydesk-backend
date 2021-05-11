@@ -8,6 +8,7 @@ const session = require("express-session");
 const bodyParser = require("body-parser");
 const app = express();
 const flash = require("connect-flash");
+var ObjectId = require("mongodb").ObjectId;
 
 const User = require("./schemas/user");
 const Folder = require("./schemas/folder_db");
@@ -167,13 +168,30 @@ app.get("/home", (req, res) => {
 
 app.post("/home/folder", (req, res) => {
   const tmp = req.session.userInfo; //using this session variable, we can get current user's _id directly
-  const newFolder = new Folder({ title: "New Folder 2", bookmarks: [] });
+  const newFolder = new Folder({ title: req.body.folderTitle, bookmarks: [] });
   newFolder.save();
   console.log(tmp.name);
   User.updateOne({ _id: tmp._id }, { $push: { folders: newFolder._id } }).exec(
     (err, doc) => {
       if (err) throw err;
-      if (doc) res.send(doc);
+      if (doc) {
+        User.save();
+        res.send(doc);
+      }
+    }
+  );
+});
+
+app.delete("/home/folder", (req, res) => {
+  const tmp = req.session.userInfo;
+  const folderId = mongoose.Types.ObjectId("609aa2128380eb693b57ccb1");
+  User.updateOne({ _id: tmp._id }, { $pull: { folders: folderId } }).exec(
+    (err, doc) => {
+      if (err) throw err;
+      if (doc) {
+        User.save();
+        res.send(tmp.folders);
+      }
     }
   );
 });
