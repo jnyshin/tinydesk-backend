@@ -8,6 +8,7 @@ const session = require("express-session");
 const bodyParser = require("body-parser");
 const app = express();
 const flash = require("connect-flash");
+var ObjectId = require("mongodb").ObjectId;
 
 const User = require("./schemas/user");
 const Folder = require("./schemas/folder_db");
@@ -16,10 +17,12 @@ const Todolist = require("./schemas/todolist_db");
 const Bookmark = require("./schemas/bookmark_db");
 const Todo = require("./schemas/todo_db");
 
+const mongoUri = process.env.MONGODB_URI;
 mongoose
   .connect(
-    "mongodb+srv://yejin:teamkgb@commandtbackend.4toiz.mongodb.net/commandTMainDev?retryWrites=true&w=majority",
-    // "mongodb://localhost:27017/test",
+    "mongodb+srv://yejin:teamkgb@commandtbackend.4toiz.mongodb.net/commandTMainDev?retryWrites=true&w=majority" ||
+      // "mongodb://localhost:27017/test",
+      mongoUri,
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -137,6 +140,15 @@ app.post("/login", (req, res, next) => {
       });
     }
   })(req, res, next);
+
+  //This code is just to figure out the problem of Heroku connection.
+  // User.findOne({ email: req.body.email }, async (err, doc) => {
+  //   if (err) throw err;
+  //   if (doc) {
+  //     req.session.userInfo = doc;
+  //     res.send(doc);
+  //   }
+  // });
 });
 
 app.get("/home", (req, res) => {
@@ -163,6 +175,42 @@ app.get("/home", (req, res) => {
         res.send(doc);
       }
     });
+});
+
+app.post("/home/folder", (req, res) => {
+  const tmp = req.session.userInfo; //using this session variable, we can get current user's _id directly
+  const newFolder = new Folder({ title: req.body.folderTitle, bookmarks: [] });
+  newFolder.save();
+  console.log(tmp.name);
+  User.updateOne({ _id: tmp._id }, { $push: { folders: newFolder._id } }).exec(
+    (err, doc) => {
+      if (err) throw err;
+      if (doc) {
+        User.save();
+        res.send(doc);
+      }
+    }
+  );
+});
+
+app.delete("/home/folder", (req, res) => {
+  const tmp = req.session.userInfo;
+  const folderId = mongoose.Types.ObjectId("609aa2128380eb693b57ccb1");
+  Folder.deleteOne({ id: folderId }, async (err, doc) => {
+    if (err) throw err;
+    if (doc) console.log(doc);
+    Folder.save();
+  });
+  User.updateOne({ _id: tmp._id }, { $pull: { folders: folderId } }).exec(
+    (err, doc) => {
+      if (err) throw err;
+      if (doc) {
+        User.save();
+        console.log("folder deleted");
+        res.send(tmp.folders);
+      }
+    }
+  );
 });
 
 // This code starts the express server
