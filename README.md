@@ -10,7 +10,7 @@ Note that only <I>Back End</I> is deployed. Our front-end repository will be dep
 ### How we push changes to Heroku Application.
 This repository is deployed on Heroku. Thus, whenever we make pull request on master branch it will be updated and deployed automatically.
 
-### Do you want to test your code before applying it to Heroky Application?
+### Do you want to test your code before applying it to Heroku Application?
 1. check <B>server.js</B>
 ```
 app.listen(process.ENV.PORT || 4000, () => {
