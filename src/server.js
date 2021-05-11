@@ -19,9 +19,9 @@ const Todo = require("./schemas/todo_db");
 const mongoUri = process.env.MONGODB_URI;
 mongoose
   .connect(
-    //"mongodb+srv://yejin:teamkgb@commandtbackend.4toiz.mongodb.net/commandTMainDev?retryWrites=true&w=majority",
-    // "mongodb://localhost:27017/test",
-    mongoUri,
+    "mongodb+srv://yejin:teamkgb@commandtbackend.4toiz.mongodb.net/commandTMainDev?retryWrites=true&w=majority" ||
+      // "mongodb://localhost:27017/test",
+      mongoUri,
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
