@@ -165,6 +165,19 @@ app.get("/home", (req, res) => {
     });
 });
 
+app.post("/home/folder", (req, res) => {
+  const tmp = req.session.userInfo; //using this session variable, we can get current user's _id directly
+  const newFolder = new Folder({ title: "New Folder 2", bookmarks: [] });
+  newFolder.save();
+  console.log(tmp.name);
+  User.updateOne({ _id: tmp._id }, { $push: { folders: newFolder._id } }).exec(
+    (err, doc) => {
+      if (err) throw err;
+      if (doc) res.send(doc);
+    }
+  );
+});
+
 // This code starts the express server
 app.listen(process.env.PORT || 4000, () => {
   console.log("Server started successfully");
