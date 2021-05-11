@@ -17,12 +17,13 @@ const Todolist = require("./schemas/todolist_db");
 const Bookmark = require("./schemas/bookmark_db");
 const Todo = require("./schemas/todo_db");
 
-const mongoUri = process.env.MONGODB_URI;
+// const mongoUri = process.env.MONGODB_URI;
 mongoose
   .connect(
-    "mongodb+srv://yejin:teamkgb@commandtbackend.4toiz.mongodb.net/commandTMainDev?retryWrites=true&w=majority" ||
-      // "mongodb://localhost:27017/test",
-      mongoUri,
+    "mongodb+srv://yejin:teamkgb@commandtbackend.4toiz.mongodb.net/commandTMainDev?retryWrites=true&w=majority",
+    // ||
+    // "mongodb://localhost:27017/test",
+    // mongoUri,
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -108,8 +109,7 @@ app.post("/signup", (req, res) => {
         folders: [newFolder._id],
         backgroundImg: {
           unsplashID: "pic1",
-          url:
-            "https://images.unsplash.com/photo-1481414981591-5732874c7193?crop=entropy&cs=srgb&fm=jpg&ixid=MnwyMjAyNzR8MHwxfHNlYXJjaHw1fHxvcmFuZ2V8ZW58MHwwfHx8MTYxODU1NjAxNQ&ixlib=rb-1.2.1&q=85",
+          url: "https://images.unsplash.com/photo-1481414981591-5732874c7193?crop=entropy&cs=srgb&fm=jpg&ixid=MnwyMjAyNzR8MHwxfHNlYXJjaHw1fHxvcmFuZ2V8ZW58MHwwfHx8MTYxODU1NjAxNQ&ixlib=rb-1.2.1&q=85",
           author: "someone",
         },
         name: req.body.name,
