@@ -182,7 +182,7 @@ app.post("/home/folder", (req, res) => {
   );
 });
 
-app.delete("/home/folder", (req, res) => {
+app.delete("/home/folder/delete", (req, res) => {
   const tmp = req.session.userInfo;
   const folderId = mongoose.Types.ObjectId("609aa2128380eb693b57ccb1");
   Folder.deleteOne({ id: folderId }, async (err, doc) => {
