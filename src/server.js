@@ -38,10 +38,17 @@ mongoose
 //Some necessary code
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.options('*', cors())
 app.use(
   cors({
-    origin: "http://localhost:8000", // gatsby localhost location
-    credentials: true,
+    origin: function (origin, callback) {
+      if (!origin) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true
   })
 );
 
