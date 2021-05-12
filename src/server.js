@@ -37,13 +37,18 @@ mongoose
   });
 
 // Use these when you pass cors
-const whilelist = ["http://localhost:8000", "https://commandt.herokuapp.com"];
+const whilelist = [
+  "http://localhost:8000",
+  "https://commandt.herokuapp.com",
+  "https://commandt-backend.herokuapp.com",
+  "https://janarosmonaliev.github.io",
+];
 const corsOptions = {
   origin: function (origin, callback) {
     if (whilelist.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
-      callback(new Error("Not allowed by CORS"));
+      callback(new Error("Not allowed by CORS - from backend"));
     }
   },
   // Allow access through react, gatsby, localhost at port 4000, and the main page.
