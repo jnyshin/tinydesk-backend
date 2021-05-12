@@ -37,7 +37,12 @@ mongoose
   });
 
 // Use these when you pass cors
-const whilelist = ["http://localhost:8000", "https://commandt.herokuapp.com"];
+const whilelist = [
+  "http://localhost:8000",
+  "https://commandt.herokuapp.com",
+  "https://commandt-backend.herokuapp.com",
+  "https://janarosmonaliev.github.io/project-416",
+];
 const corsOptions = {
   origin: function (origin, callback) {
     if (whilelist.indexOf(origin) !== -1) {
