@@ -224,6 +224,24 @@ app.delete("/home/folder", (req, res) => {
   );
 });
 
+app.delete("/home/todolist", (req, res) => {
+  const tmp = req.session.userInfo;
+  const todolistId = mongoose.Types.ObjectId(req.body.removeId);
+  Todolist.deleteOne({ id: todolistId }, async (err, doc) => {
+    if (err) throw err;
+    if (doc) console.log(doc);
+  });
+  User.updateOne({ _id: tmp._id }, { $pull: { todolists: todolistId } }).exec(
+    (err, doc) => {
+      if (err) throw err;
+      if (doc) {
+        console.log("todolist deleted");
+        res.send(tmp.todolists);
+      }
+    }
+  );
+});
+
 // This code starts the express server
 app.listen(process.env.PORT || 4000, () => {
   console.log("Server started successfully");
