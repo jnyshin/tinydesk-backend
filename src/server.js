@@ -42,7 +42,7 @@ const whilelist = [
   "https://commandt.herokuapp.com",
   "https://janarosmonaliev.github.io",
 ];
-const corsOptions = {  
+const corsOptions = {
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 };
 
@@ -144,7 +144,7 @@ app.post("/login", (req, res, next) => {
         res.send("Successfully Authenticated");
       });
     }
-  })(res, req, next);
+  })(req, res, next);
 
   //This code is just to figure out the problem of Heroku connection.
   // User.findOne({ email: req.body.email }, async (err, doc) => {
