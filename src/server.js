@@ -37,18 +37,21 @@ mongoose
   });
 
 // Use these when you pass cors
-corsOptions = {
-  origin: ["http://localhost:8000/", "https://janarosmonaliev.github.io/project-416/", "http://localhost:4000/", "http://localhost:3000/"], // Allow access through react, gatsby, localhost at port 4000, and the main page.
+const corsOptions = {
+  origin: [
+    "http://localhost:8000/",
+    "https://janarosmonaliev.github.io/project-416/",
+    "http://localhost:4000/",
+    "http://localhost:3000/",
+  ], // Allow access through react, gatsby, localhost at port 4000, and the main page.
   credentials: true,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-}
+};
 
 //Some necessary code
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(
-  cors(corsOptions)
-);
+app.use(cors(corsOptions));
 
 // Create a cookie
 app.use(
@@ -143,7 +146,7 @@ app.post("/login", cors(corsOptions), (req, res, next) => {
         res.send("Successfully Authenticated");
       });
     }
-  })
+  });
 
   next();
 
