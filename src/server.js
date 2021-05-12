@@ -37,18 +37,29 @@ mongoose
   });
 
 // Use these when you pass cors
-corsOptions = {
-  origin: ["http://localhost:8000/", "https://janarosmonaliev.github.io/project-416/", "http://localhost:4000/", "http://localhost:3000/"], // Allow access through react, gatsby, localhost at port 4000, and the main page.
+const whilelist = [
+  "http://localhost:8000",
+  "https://commandt.herokuapp.com",
+  "https://commandt-backend.herokuapp.com",
+  "https://janarosmonaliev.github.io",
+];
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whilelist.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS - from backend"));
+    }
+  },
+  // Allow access through react, gatsby, localhost at port 4000, and the main page.
   credentials: true,
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-}
+};
 
 //Some necessary code
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(
-  cors(corsOptions)
-);
+app.use(cors(corsOptions));
 
 // Create a cookie
 app.use(
@@ -143,9 +154,7 @@ app.post("/login", cors(corsOptions), (req, res, next) => {
         res.send("Successfully Authenticated");
       });
     }
-  })
-
-  next();
+  })(req, res, next);
 
   //This code is just to figure out the problem of Heroku connection.
   // User.findOne({ email: req.body.email }, async (err, doc) => {
