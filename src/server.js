@@ -121,7 +121,8 @@ app.post("/signup", (req, res) => {
         folders: [newFolder._id],
         backgroundImg: {
           unsplashID: "pic1",
-          url: "https://images.unsplash.com/photo-1481414981591-5732874c7193?crop=entropy&cs=srgb&fm=jpg&ixid=MnwyMjAyNzR8MHwxfHNlYXJjaHw1fHxvcmFuZ2V8ZW58MHwwfHx8MTYxODU1NjAxNQ&ixlib=rb-1.2.1&q=85",
+          url:
+            "https://images.unsplash.com/photo-1481414981591-5732874c7193?crop=entropy&cs=srgb&fm=jpg&ixid=MnwyMjAyNzR8MHwxfHNlYXJjaHw1fHxvcmFuZ2V8ZW58MHwwfHx8MTYxODU1NjAxNQ&ixlib=rb-1.2.1&q=85",
           author: "someone",
         },
         name: req.body.name,
@@ -182,7 +183,7 @@ app.get("/home", (req, res) => {
     .exec((err, doc) => {
       if (err) throw err;
       if (doc) {
-        console.log(doc);
+        //console.log(doc);
         res.send(doc);
       }
     });
@@ -190,7 +191,8 @@ app.get("/home", (req, res) => {
 
 app.post("/home/folder", (req, res) => {
   const tmp = req.session.userInfo; //using this session variable, we can get current user's _id directly
-  const newFolder = new Folder({ title: req.body.folderTitle, bookmarks: [] });
+  console.log(req.body.title);
+  const newFolder = new Folder({ title: req.body.title, bookmarks: [] });
   newFolder.save();
   console.log(tmp.name);
   User.updateOne({ _id: tmp._id }, { $push: { folders: newFolder._id } }).exec(
