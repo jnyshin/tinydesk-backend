@@ -43,13 +43,20 @@ const whilelist = [
   "https://janarosmonaliev.github.io",
 ];
 const corsOptions = {
+  origin: "http://localhost:8000",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 };
 
 //Some necessary code
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors(corsOptions));
+app.use(
+  cors({
+    origin: "http://localhost:8000",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+  })
+);
 
 // Create a cookie
 app.use(
@@ -132,8 +139,7 @@ app.get("/", (req, res) => {
     "Hi, we are Team KGB! This website is for our web application, Command T."
   );
 });
-
-app.post("/login", (req, res, next) => {
+app.post("/login", cors(corsOptions), (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) throw err;
     if (!user) res.send("No User Exists");
