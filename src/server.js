@@ -199,7 +199,6 @@ app.post("/home/folder", (req, res) => {
     (err, doc) => {
       if (err) throw err;
       if (doc) {
-        User.save();
         res.send(doc);
       }
     }
@@ -254,6 +253,22 @@ app.delete("/home/todolist", (req, res) => {
       if (doc) {
         console.log("todolist deleted");
         res.send(tmp.todolists);
+      }
+    }
+  );
+});
+
+app.post("/home/note", (req, res) => {
+  const tmp = req.session.userInfo; //using this session variable, we can get current user's _id directly
+  const newNote = new Note({ title: "", content: "" });
+  newNote.save();
+  User.updateOne({ _id: tmp._id }, { $push: { notes: newNote._id } }).exec(
+    (err, doc) => {
+      if (err) throw err;
+      if (doc) {
+        //User.save();
+        console.log("note added");
+        res.send(doc);
       }
     }
   );
