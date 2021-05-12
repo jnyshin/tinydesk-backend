@@ -133,7 +133,7 @@ app.get("/", (req, res) => {
   );
 });
 
-app.post("/login", cors(corsOptions), (req, res, next) => {
+app.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) throw err;
     if (!user) res.send("No User Exists");
