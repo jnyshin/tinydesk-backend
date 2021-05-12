@@ -42,16 +42,7 @@ const whilelist = [
   "https://commandt.herokuapp.com",
   "https://janarosmonaliev.github.io",
 ];
-const corsOptions = {
-  origin: function (origin, callback) {
-    if (whilelist.indexOf(origin) !== -1 || origin) {
-      callback(null, true);
-    } else {
-      callback(new Error("Not allowed by CORS - from backend"));
-    }
-  },
-  // Allow access through react, gatsby, localhost at port 4000, and the main page.
-  credentials: true,
+const corsOptions = {  
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 };
 
@@ -78,7 +69,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Routes
-app.post("/signup", cors(corsOptions), (req, res) => {
+app.post("/signup", (req, res) => {
   User.findOne({ email: req.body.email }, async (err, doc) => {
     if (err) throw err;
     if (doc) res.send("user Already Exists");
