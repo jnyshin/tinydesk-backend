@@ -136,7 +136,7 @@ app.post("/signup", cors(corsOptions), (req, res) => {
   });
 });
 
-app.get("/", cors(corsOptions), (req, res) => {
+app.get("/", (req, res) => {
   res.send(
     "Hi, we are Team KGB! This website is for our web application, Command T."
   );
@@ -164,7 +164,7 @@ app.post("/login", cors(corsOptions), (req, res, next) => {
   // });
 });
 
-app.get("/home", cors(corsOptions), (req, res) => {
+app.get("/home", (req, res) => {
   const tmp = req.session.userInfo;
   User.findOne({ email: tmp.email })
     .populate({
@@ -190,7 +190,7 @@ app.get("/home", cors(corsOptions), (req, res) => {
     });
 });
 
-app.post("/home/folder", cors(corsOptions), (req, res) => {
+app.post("/home/folder", (req, res) => {
   const tmp = req.session.userInfo; //using this session variable, we can get current user's _id directly
   const newFolder = new Folder({ title: req.body.folderTitle, bookmarks: [] });
   newFolder.save();
@@ -206,7 +206,7 @@ app.post("/home/folder", cors(corsOptions), (req, res) => {
   );
 });
 
-app.delete("/home/folder", cors(corsOptions), (req, res) => {
+app.delete("/home/folder", (req, res) => {
   const tmp = req.session.userInfo;
   const folderId = mongoose.Types.ObjectId("609aa2128380eb693b57ccb1");
   Folder.deleteOne({ id: folderId }, async (err, doc) => {
