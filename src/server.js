@@ -39,7 +39,7 @@ mongoose
 //Some necessary code
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.options('*', cors())
+app.options('http://localhost:8000/', cors())
 app.use(
   cors({
     origin: function (origin, callback) {
