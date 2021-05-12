@@ -274,6 +274,90 @@ app.post("/home/note", (req, res) => {
   );
 });
 
+
+// --------------------------------------------------
+// Fabio's API routes
+
+// @desc    Removes a note
+// @route   DELETE /home/users/<String: username>/notes/
+app.delete("/home/notes", (req, res) => {
+  // code here
+});
+
+// @desc    Update note
+// @route   PUT /home/users/<String: username>/notes/<String: noteId>
+app.put("/home/notes", (req, res) => {
+  // code here
+});
+
+// @desc    Change note position
+// @route   PUT /home/users/<String: username>/notes/
+app.put("/home/todolist", (req, res) => {
+  // code here
+});
+
+// @desc    Add a widget
+// @route   POST /home/users/<String: username>/widgets/
+app.post("/home/widgets", (req, res) => {
+  // code here
+});
+
+// @desc    Removes a widget
+// @route   DELETE /home/users/<String: username>/widgets/
+app.delete("/home/widgets", (req, res) => {
+  // code here
+});
+
+// @desc    Change widget's position
+// @route   PUT /home/users/<String: username>/widgets/
+app.put("/home/widgets", (req, res) => {
+  // code here
+});
+
+// @desc    Add a bookmark
+// @route   POST /home/users/<String: username>/folders/<String: folderId>/bookmarks
+app.post("/home/folders/bookmarks", (req, res) => {
+  // code here
+});
+
+// @desc    Remove a bookmark
+// @route   DELETE /home/users/<String: username>/folders/<String: folderId>/bookmarks/<String: bookmarkId>
+app.delete("/home/folders/bookmarks", (req, res) => {
+  // code here
+});
+
+// @desc    Change bookmark's position
+// @route   PUT /home/users/<String: username>/folders/<String: folderId>/bookmarks
+app.put("/home/folders/bookmarks", (req, res) => {
+  // code here
+});
+
+// @desc    Add todo
+// @route   POST /home/users/<String: username>/todolists/<String: todolistId>/todos
+app.post("/home/todolists/todos", (req, res) => {
+  // code here
+});
+
+// @desc    Remove a completed todo
+// @route   DELETE /home/users/<String: username>/todolists/<String: todolistId>/todos/<String: todoId>
+app.delete("/home/todolists/todos", (req, res) => {
+  // code here
+});
+
+// @desc    Change todo name
+// @route   PUT /home/users/<String: username>/todolists/<String: todolistId>/todos/<String: todoId>
+app.put("/home/todolists/todos", (req, res) => {
+  // code here
+});
+
+// @desc    Change todo's position
+// @route   PUT /home/users/<String: username>/todolists/<String: todolistId>/todos
+app.put("/home/todolists/todos", (req, res) => {
+  // code here
+});
+
+
+
 // This code starts the express server
 app.listen(process.env.PORT || 4000, () => {
   console.log("Server started successfully");
