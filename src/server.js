@@ -36,15 +36,18 @@ mongoose
     console.error("Failed to connect with MongoDB", err);
   });
 
+// Use these when you pass cors
+corsOptions = {
+  origin: ["http://localhost:8000/", "https://janarosmonaliev.github.io/project-416/", "http://localhost:4000/", "http://localhost:3000/"], // Allow access through react, gatsby, localhost at port 4000, and the main page.
+  credentials: true,
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+}
+
 //Some necessary code
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
-  cors({
-    origin: ["http://localhost:8000/", "https://janarosmonaliev.github.io/project-416/", "http://localhost:4000/", "http://localhost:3000/"], // Allow access through react, gatsby, localhost at port 4000, and the main page.
-    credentials: true,
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-  })
+  cors(corsOptions)
 );
 
 // Create a cookie
@@ -65,7 +68,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Routes
-app.post("/signup", (req, res) => {
+app.post("/signup", cors(corsOptions), (req, res) => {
   User.findOne({ email: req.body.email }, async (err, doc) => {
     if (err) throw err;
     if (doc) res.send("user Already Exists");
@@ -123,13 +126,13 @@ app.post("/signup", (req, res) => {
   });
 });
 
-app.get("/", (req, res) => {
+app.get("/", cors(corsOptions), (req, res) => {
   res.send(
     "Hi, we are Team KGB! This website is for our web application, Command T."
   );
 });
 
-app.post("/login", (req, res, next) => {
+app.post("/login", cors(corsOptions), (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) throw err;
     if (!user) res.send("No User Exists");
@@ -140,7 +143,9 @@ app.post("/login", (req, res, next) => {
         res.send("Successfully Authenticated");
       });
     }
-  })(req, res, next);
+  })
+
+  next();
 
   //This code is just to figure out the problem of Heroku connection.
   // User.findOne({ email: req.body.email }, async (err, doc) => {
@@ -152,7 +157,7 @@ app.post("/login", (req, res, next) => {
   // });
 });
 
-app.get("/home", (req, res) => {
+app.get("/home", cors(corsOptions), (req, res) => {
   const tmp = req.session.userInfo;
   User.findOne({ email: tmp.email })
     .populate({
@@ -178,7 +183,7 @@ app.get("/home", (req, res) => {
     });
 });
 
-app.post("/home/folder", (req, res) => {
+app.post("/home/folder", cors(corsOptions), (req, res) => {
   const tmp = req.session.userInfo; //using this session variable, we can get current user's _id directly
   const newFolder = new Folder({ title: req.body.folderTitle, bookmarks: [] });
   newFolder.save();
@@ -194,7 +199,7 @@ app.post("/home/folder", (req, res) => {
   );
 });
 
-app.delete("/home/folder", (req, res) => {
+app.delete("/home/folder", cors(corsOptions), (req, res) => {
   const tmp = req.session.userInfo;
   const folderId = mongoose.Types.ObjectId("609aa2128380eb693b57ccb1");
   Folder.deleteOne({ id: folderId }, async (err, doc) => {
