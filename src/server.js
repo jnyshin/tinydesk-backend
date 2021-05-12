@@ -224,6 +224,23 @@ app.delete("/home/folder", (req, res) => {
   );
 });
 
+app.post("/home/todolist", (req, res) => {
+  const tmp = req.session.userInfo; //using this session variable, we can get current user's _id directly
+  const newTodolist = new Todolist({ title: "", bookmarks: [] });
+  newTodolist.save();
+  User.updateOne(
+    { _id: tmp._id },
+    { $push: { todolists: newTodolist._id } }
+  ).exec((err, doc) => {
+    if (err) throw err;
+    if (doc) {
+      //User.save();
+      console.log("todolist added");
+      res.send(doc);
+    }
+  });
+});
+
 app.delete("/home/todolist", (req, res) => {
   const tmp = req.session.userInfo;
   const todolistId = mongoose.Types.ObjectId(req.body.removeId);
