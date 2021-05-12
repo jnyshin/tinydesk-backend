@@ -36,22 +36,16 @@ mongoose
     console.error("Failed to connect with MongoDB", err);
   });
 
-var whitelist = ['http://localhost:8000/', 'https://janarosmonaliev.github.io/'];
+// var whitelist = ['http://localhost:8000/', 'https://janarosmonaliev.github.io/'];
 
 var corsOptions = {
-  origin: function (origin, callback) {
-    if (whitelist.indexOf(origin) !== -1 || !origin) {
-      callback(null, true)
-    } else {
-      callback(new Error('Not allowed by CORS'))
-    }
-  }
+  origin: false
 }
 
-app.options('/', cors()) // enable pre-flight request for DELETE request
-app.del('/', cors(), function (req, res, next) {
-  res.json({msg: 'This is CORS-enabled for all origins!'})
-})
+// app.options('/', cors()) // enable pre-flight request for DELETE request
+// app.del('/', cors(), function (req, res, next) {
+//   res.json({msg: 'This is CORS-enabled for all origins!'})
+// })
 
 
 //Some necessary code
