@@ -38,9 +38,9 @@ mongoose
 
 // Use these when you pass cors
 const whilelist = [
-  "http://localhost:8000",
-  "https://commandt.herokuapp.com",
-  "https://janarosmonaliev.github.io",
+  "http://localhost:8000/",
+  "https://commandt.herokuapp.com/",
+  "https://janarosmonaliev.github.io/",
 ];
 const corsOptions = {
   origin: function (origin, callback) {
@@ -153,9 +153,7 @@ app.post("/login", cors(corsOptions), (req, res, next) => {
         res.send("Successfully Authenticated");
       });
     }
-  })
-
-  next();
+  })(req, res, next);
   //This code is just to figure out the problem of Heroku connection.
   // User.findOne({ email: req.body.email }, async (err, doc) => {
   //   if (err) throw err;
