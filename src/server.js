@@ -153,9 +153,7 @@ app.post("/login", cors(corsOptions), (req, res, next) => {
         res.send("Successfully Authenticated");
       });
     }
-  })
-
-  next();
+  })(res, req, next);
 
   //This code is just to figure out the problem of Heroku connection.
   // User.findOne({ email: req.body.email }, async (err, doc) => {
