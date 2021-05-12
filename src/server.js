@@ -44,7 +44,7 @@ const whilelist = [
 ];
 const corsOptions = {
   origin: function (origin, callback) {
-    if (whilelist.indexOf(origin) !== -1) {
+    if (whilelist.indexOf(origin) !== -1 || origin) {
       callback(null, true);
     } else {
       callback(new Error("Not allowed by CORS - from backend"));
@@ -156,7 +156,7 @@ app.post("/login", cors(corsOptions), (req, res, next) => {
   })
 
   next();
-  
+
   //This code is just to figure out the problem of Heroku connection.
   // User.findOne({ email: req.body.email }, async (err, doc) => {
   //   if (err) throw err;
