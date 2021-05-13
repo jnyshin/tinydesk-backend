@@ -225,7 +225,7 @@ app.delete("/home/folder", (req, res) => {
 
 app.post("/home/todolist", (req, res) => {
   const tmp = req.session.userInfo; //using this session variable, we can get current user's _id directly
-  const newTodolist = new Todolist({ title: "", bookmarks: [] });
+  const newTodolist = new Todolist({ title: req.body.title, bookmarks: [] });
   newTodolist.save();
   User.updateOne(
     { _id: tmp._id },
@@ -234,7 +234,7 @@ app.post("/home/todolist", (req, res) => {
     if (err) throw err;
     if (doc) {
       //User.save();
-      console.log("todolist added");
+      console.log("todolist added with title ", req.body.title);
       res.send(doc);
     }
   });
@@ -242,6 +242,7 @@ app.post("/home/todolist", (req, res) => {
 
 app.delete("/home/todolist", (req, res) => {
   const tmp = req.session.userInfo;
+  console.log(req.body.removeId);
   const todolistId = mongoose.Types.ObjectId(req.body.removeId);
   Todolist.deleteOne({ id: todolistId }, async (err, doc) => {
     if (err) throw err;
@@ -273,90 +274,6 @@ app.post("/home/note", (req, res) => {
     }
   );
 });
-
-
-// --------------------------------------------------
-// Fabio's API routes
-
-// @desc    Removes a note
-// @route   DELETE /home/users/<String: username>/notes/
-app.delete("/home/notes", (req, res) => {
-  // code here
-});
-
-// @desc    Update note
-// @route   PUT /home/users/<String: username>/notes/<String: noteId>
-app.put("/home/notes", (req, res) => {
-  // code here
-});
-
-// @desc    Change note position
-// @route   PUT /home/users/<String: username>/notes/
-app.put("/home/todolist", (req, res) => {
-  // code here
-});
-
-// @desc    Add a widget
-// @route   POST /home/users/<String: username>/widgets/
-app.post("/home/widgets", (req, res) => {
-  // code here
-});
-
-// @desc    Removes a widget
-// @route   DELETE /home/users/<String: username>/widgets/
-app.delete("/home/widgets", (req, res) => {
-  // code here
-});
-
-// @desc    Change widget's position
-// @route   PUT /home/users/<String: username>/widgets/
-app.put("/home/widgets", (req, res) => {
-  // code here
-});
-
-// @desc    Add a bookmark
-// @route   POST /home/users/<String: username>/folders/<String: folderId>/bookmarks
-app.post("/home/folders/bookmarks", (req, res) => {
-  // code here
-});
-
-// @desc    Remove a bookmark
-// @route   DELETE /home/users/<String: username>/folders/<String: folderId>/bookmarks/<String: bookmarkId>
-app.delete("/home/folders/bookmarks", (req, res) => {
-  // code here
-});
-
-// @desc    Change bookmark's position
-// @route   PUT /home/users/<String: username>/folders/<String: folderId>/bookmarks
-app.put("/home/folders/bookmarks", (req, res) => {
-  // code here
-});
-
-// @desc    Add todo
-// @route   POST /home/users/<String: username>/todolists/<String: todolistId>/todos
-app.post("/home/todolists/todos", (req, res) => {
-  // code here
-});
-
-// @desc    Remove a completed todo
-// @route   DELETE /home/users/<String: username>/todolists/<String: todolistId>/todos/<String: todoId>
-app.delete("/home/todolists/todos", (req, res) => {
-  // code here
-});
-
-// @desc    Change todo name
-// @route   PUT /home/users/<String: username>/todolists/<String: todolistId>/todos/<String: todoId>
-app.put("/home/todolists/todos", (req, res) => {
-  // code here
-});
-
-// @desc    Change todo's position
-// @route   PUT /home/users/<String: username>/todolists/<String: todolistId>/todos
-app.put("/home/todolists/todos", (req, res) => {
-  // code here
-});
-
-
 
 // This code starts the express server
 app.listen(process.env.PORT || 4000, () => {
