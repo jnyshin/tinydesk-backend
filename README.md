@@ -20,5 +20,19 @@ app.listen(process.ENV.PORT || 4000, () => {
 2. Delete ```process.ENV.PORT``` (port address that Heroku uses)and make this app listen to only local host 4000.
 3. Run your code with ```node server.js```
 
+### Note on useful commands for the team members when using Heroku CLI:
+
+1. To take the heroku app offline, remove the dyno with the command:
+heroku ps:scale web=0
+
+2. To restart the dyno:
+heroku dyno:restart
+
+2. To take the heroku app online once again:
+heroku ps:scale web=1
+
+4. To build based on the code pushed to master branch:
+git push heroku master
+
 
 Last updated on 5/11/2021

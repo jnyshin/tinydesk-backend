@@ -43,13 +43,20 @@ const whilelist = [
   "https://janarosmonaliev.github.io",
 ];
 const corsOptions = {
+  origin: "http://localhost:8000",
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
 };
 
 //Some necessary code
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cors(corsOptions));
+app.use(
+  cors({
+    origin: "http://localhost:8000",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+  })
+);
 
 // Create a cookie
 app.use(
@@ -114,7 +121,8 @@ app.post("/signup", (req, res) => {
         folders: [newFolder._id],
         backgroundImg: {
           unsplashID: "pic1",
-          url: "https://images.unsplash.com/photo-1481414981591-5732874c7193?crop=entropy&cs=srgb&fm=jpg&ixid=MnwyMjAyNzR8MHwxfHNlYXJjaHw1fHxvcmFuZ2V8ZW58MHwwfHx8MTYxODU1NjAxNQ&ixlib=rb-1.2.1&q=85",
+          url:
+            "https://images.unsplash.com/photo-1481414981591-5732874c7193?crop=entropy&cs=srgb&fm=jpg&ixid=MnwyMjAyNzR8MHwxfHNlYXJjaHw1fHxvcmFuZ2V8ZW58MHwwfHx8MTYxODU1NjAxNQ&ixlib=rb-1.2.1&q=85",
           author: "someone",
         },
         name: req.body.name,
@@ -132,8 +140,7 @@ app.get("/", (req, res) => {
     "Hi, we are Team KGB! This website is for our web application, Command T."
   );
 });
-
-app.post("/login", (req, res, next) => {
+app.post("/login", cors(corsOptions), (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) throw err;
     if (!user) res.send("No User Exists");
@@ -176,7 +183,7 @@ app.get("/home", (req, res) => {
     .exec((err, doc) => {
       if (err) throw err;
       if (doc) {
-        console.log(doc);
+        //console.log(doc);
         res.send(doc);
       }
     });
@@ -184,14 +191,14 @@ app.get("/home", (req, res) => {
 
 app.post("/home/folder", (req, res) => {
   const tmp = req.session.userInfo; //using this session variable, we can get current user's _id directly
-  const newFolder = new Folder({ title: req.body.folderTitle, bookmarks: [] });
+  console.log(req.body.title);
+  const newFolder = new Folder({ title: req.body.title, bookmarks: [] });
   newFolder.save();
   console.log(tmp.name);
   User.updateOne({ _id: tmp._id }, { $push: { folders: newFolder._id } }).exec(
     (err, doc) => {
       if (err) throw err;
       if (doc) {
-        User.save();
         res.send(doc);
       }
     }
@@ -200,22 +207,174 @@ app.post("/home/folder", (req, res) => {
 
 app.delete("/home/folder", (req, res) => {
   const tmp = req.session.userInfo;
-  const folderId = mongoose.Types.ObjectId("609aa2128380eb693b57ccb1");
+  const folderId = mongoose.Types.ObjectId(req.body.removeId);
   Folder.deleteOne({ id: folderId }, async (err, doc) => {
     if (err) throw err;
     if (doc) console.log(doc);
-    Folder.save();
   });
   User.updateOne({ _id: tmp._id }, { $pull: { folders: folderId } }).exec(
     (err, doc) => {
       if (err) throw err;
       if (doc) {
-        User.save();
         console.log("folder deleted");
         res.send(tmp.folders);
       }
     }
   );
+});
+
+app.post("/home/todolist", (req, res) => {
+  const tmp = req.session.userInfo; //using this session variable, we can get current user's _id directly
+  const newTodolist = new Todolist({ title: "", bookmarks: [] });
+  newTodolist.save();
+  const newId = newTodolist._id;
+  User.updateOne(
+    { _id: tmp._id },
+    { $push: { todolists: newTodolist._id } }
+  ).exec((err, doc) => {
+    if (err) throw err;
+    if (doc) {
+      //User.save();
+      console.log("New Todolist's id is", newId);
+      res.send(newId);
+    }
+  });
+});
+
+app.put("/home/todolist", (req, res) => {
+  //const tmp = req.session.userInfo; //using this session variable, we can get current user's _id directly
+  // const newTodolist = new Todolist({ title: "", bookmarks: [] });
+  // newTodolist.save();
+  // const newId = newTodolist._id;
+  const todolistId = mongoose.Types.ObjectId(req.body._id);
+  console.log("Which todolsit to update: ", todolistId);
+  Todolist.updateOne(
+    { _id: todolistId },
+    { $set: { title: req.body.title } }
+  ).exec((err, doc) => {
+    if (err) throw err;
+    if (doc) {
+      //User.save();
+      console.log("Updated Todolist's title");
+      res.send(doc);
+    }
+  });
+});
+
+app.delete("/home/todolist", (req, res) => {
+  const tmp = req.session.userInfo;
+  console.log(req.body.removeId);
+  const todolistId = mongoose.Types.ObjectId(req.body.removeId);
+  Todolist.deleteOne({ id: todolistId }, async (err, doc) => {
+    if (err) throw err;
+    if (doc) console.log(doc);
+  });
+  User.updateOne({ _id: tmp._id }, { $pull: { todolists: todolistId } }).exec(
+    (err, doc) => {
+      if (err) throw err;
+      if (doc) {
+        console.log("todolist deleted");
+        res.send(tmp.todolists);
+      }
+    }
+  );
+});
+
+app.post("/home/note", (req, res) => {
+  const tmp = req.session.userInfo; //using this session variable, we can get current user's _id directly
+  const newNote = new Note({ title: "", content: "" });
+  newNote.save();
+  User.updateOne({ _id: tmp._id }, { $push: { notes: newNote._id } }).exec(
+    (err, doc) => {
+      if (err) throw err;
+      if (doc) {
+        //User.save();
+        console.log("note added");
+        res.send(doc);
+      }
+    }
+  );
+});
+
+// --------------------------------------------------
+// Fabio's API routes
+
+// @desc    Removes a note
+// @route   DELETE /home/users/<String: username>/notes/
+app.delete("/home/notes", (req, res) => {
+  // code here
+});
+
+// @desc    Update note
+// @route   PUT /home/users/<String: username>/notes/<String: noteId>
+app.put("/home/notes", (req, res) => {
+  // code here
+});
+
+// @desc    Change note position
+// @route   PUT /home/users/<String: username>/notes/
+app.put("/home/todolist", (req, res) => {
+  // code here
+});
+
+// @desc    Add a widget
+// @route   POST /home/users/<String: username>/widgets/
+app.post("/home/widgets", (req, res) => {
+  // code here
+});
+
+// @desc    Removes a widget
+// @route   DELETE /home/users/<String: username>/widgets/
+app.delete("/home/widgets", (req, res) => {
+  // code here
+});
+
+// @desc    Change widget's position
+// @route   PUT /home/users/<String: username>/widgets/
+app.put("/home/widgets", (req, res) => {
+  // code here
+});
+
+// @desc    Add a bookmark
+// @route   POST /home/users/<String: username>/folders/<String: folderId>/bookmarks
+app.post("/home/folders/bookmarks", (req, res) => {
+  // code here
+});
+
+// @desc    Remove a bookmark
+// @route   DELETE /home/users/<String: username>/folders/<String: folderId>/bookmarks/<String: bookmarkId>
+app.delete("/home/folders/bookmarks", (req, res) => {
+  // code here
+});
+
+// @desc    Change bookmark's position
+// @route   PUT /home/users/<String: username>/folders/<String: folderId>/bookmarks
+app.put("/home/folders/bookmarks", (req, res) => {
+  // code here
+});
+
+// @desc    Add todo
+// @route   POST /home/users/<String: username>/todolists/<String: todolistId>/todos
+app.post("/home/todolists/todos", (req, res) => {
+  // code here
+});
+
+// @desc    Remove a completed todo
+// @route   DELETE /home/users/<String: username>/todolists/<String: todolistId>/todos/<String: todoId>
+app.delete("/home/todolists/todos", (req, res) => {
+  // code here
+});
+
+// @desc    Change todo name
+// @route   PUT /home/users/<String: username>/todolists/<String: todolistId>/todos/<String: todoId>
+app.put("/home/todolists/todos", (req, res) => {
+  // code here
+});
+
+// @desc    Change todo's position
+// @route   PUT /home/users/<String: username>/todolists/<String: todolistId>/todos
+app.put("/home/todolists/todos", (req, res) => {
+  // code here
 });
 
 // This code starts the express server
