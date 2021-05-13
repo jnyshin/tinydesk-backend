@@ -225,8 +225,9 @@ app.delete("/home/folder", (req, res) => {
 
 app.post("/home/todolist", (req, res) => {
   const tmp = req.session.userInfo; //using this session variable, we can get current user's _id directly
-  const newTodolist = new Todolist({ title: req.body.title, bookmarks: [] });
+  const newTodolist = new Todolist({ title: "", bookmarks: [] });
   newTodolist.save();
+  const newId = newTodolist._id;
   User.updateOne(
     { _id: tmp._id },
     { $push: { todolists: newTodolist._id } }
@@ -234,7 +235,27 @@ app.post("/home/todolist", (req, res) => {
     if (err) throw err;
     if (doc) {
       //User.save();
-      console.log("todolist added with title ", req.body.title);
+      console.log("New Todolist's id is", newId);
+      res.send(newId);
+    }
+  });
+});
+
+app.put("/home/todolist", (req, res) => {
+  //const tmp = req.session.userInfo; //using this session variable, we can get current user's _id directly
+  // const newTodolist = new Todolist({ title: "", bookmarks: [] });
+  // newTodolist.save();
+  // const newId = newTodolist._id;
+  const todolistId = mongoose.Types.ObjectId(req.body._id);
+  console.log("Which todolsit to update: ", todolistId);
+  Todolist.updateOne(
+    { _id: todolistId },
+    { $set: { title: req.body.title } }
+  ).exec((err, doc) => {
+    if (err) throw err;
+    if (doc) {
+      //User.save();
+      console.log("Updated Todolist's title");
       res.send(doc);
     }
   });
