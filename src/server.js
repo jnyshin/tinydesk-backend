@@ -163,6 +163,11 @@ app.post("/login", cors(corsOptions), (req, res, next) => {
   // });
 });
 
+app.get('/logout', function(req, res){
+  req.logout();
+  res.send("Successful logout");
+});
+
 app.get("/home", (req, res) => {
   const tmp = req.session.userInfo;
   User.findOne({ email: tmp.email })
