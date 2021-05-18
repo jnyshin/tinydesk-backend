@@ -141,6 +141,7 @@ app.get("/", (req, res) => {
   );
 });
 app.post("/login", cors(corsOptions), (req, res, next) => {
+  console.log(req.body);
   passport.authenticate("local", (err, user, info) => {
     if (err) throw err;
     if (!user) res.send("No User Exists");
@@ -296,6 +297,36 @@ app.post("/home/note", (req, res) => {
   );
 });
 
+app.put("/home/background", (req, res) => {
+  const tmp = req.session.userInfo; //using this session variable, we can get current user's _id directly
+  User.updateOne(
+    { _id: tmp._id },
+    {
+      $set: {
+        backgroundImg: {
+          url: req.body.url,
+        },
+      },
+    }
+  ).exec((err, doc) => {
+    if (err) throw err;
+    if (doc) {
+      console.log("changed background pic");
+      res.send(doc);
+    }
+  });
+  // User.findOne({ _id: tmp._id }, async (err, doc) => {
+  //   if (err) throw err;
+  //   if (doc) {
+  //     // doc.backgroundImg.url = req.body.url;
+  //     // doc.save();
+  //     console.log(req._parsedOriginalUrl.query);
+  //     console.log(doc.backgroundImg.url);
+  //     console.log(req.body.uri);
+  //     res.send(doc);
+  //   }
+  // });
+});
 // --------------------------------------------------
 // Fabio's API routes
 
