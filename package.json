@@ -1,53 +1,35 @@
 {
   "name": "cse416-commandt-backend",
-  "version": "0.1.0",
-  "private": true,
+  "version": "1.0.0",
+  "description": "Our front-end repository is at here [project-416](https://github.com/janarosmonaliev/project-416).",
+  "main": "server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jnyshin/cse416-commandt-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jnyshin/cse416-commandt-backend/issues"
+  },
+  "homepage": "https://github.com/jnyshin/cse416-commandt-backend#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  },
   "dependencies": {
-    "@testing-library/jest-dom": "^5.11.4",
-    "@testing-library/react": "^11.1.0",
-    "@testing-library/user-event": "^12.1.10",
-    "axios": "^0.21.1",
-    "bcryptjs": "^2.4.3",
-    "body-parser": "^1.19.0",
-    "classnames": "^2.3.1",
-    "clsx": "^1.1.1",
-    "connect-flash": "^0.1.1",
-    "cookie-parser": "^1.4.5",
+    "bcrypt": "^5.0.1",
+    "connect-mongo": "^4.4.1",
     "cors": "^2.8.5",
-    "dayjs": "^1.10.4",
+    "dotenv": "^9.0.2",
     "express": "^4.17.1",
     "express-session": "^1.17.1",
-    "mongoose": "^5.12.7",
-    "nodemon": "^2.0.7",
+    "mongoose": "^5.12.9",
     "passport": "^0.4.1",
-    "passport-local": "^1.0.0",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "react-scripts": "4.0.3",
-    "web-vitals": "^1.0.1"
-  },
-  "scripts": {
-    "start": "node src/server.js"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "engines": {
-    "node": "12.18.3"
+    "passport-local": "^1.0.0"
   }
 }
