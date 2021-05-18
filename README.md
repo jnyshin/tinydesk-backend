@@ -36,10 +36,10 @@ git push heroku master
 
 ### Development & Production Configuration
 #### Set node environment
-<p>1. Go to ```.env``` file. <br />
-2. If you are developing on Localhost, change ```NODE_ENV``` to ```development``` <br />
-3. Before you push to master, change ```NODE_ENV``` to ```production``` </p>
+1. Go to `.env` file. <br />
+2. If you are developing on Localhost, change `NODE_ENV` to `development` <br />
+3. Before you push to master, change `NODE_ENV` to `production`
 <br />
 #### Start server in development
-<p>```npm run dev```</p>
+`npm run dev`
 Last updated on 5/18/2021
