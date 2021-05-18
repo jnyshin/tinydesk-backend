@@ -34,5 +34,9 @@ heroku ps:scale web=1
 4. To build based on the code pushed to master branch:
 git push heroku master
 
+### Development & Production Configuration
+1. Go to `.env` file.
+2. If you are developing on Localhost, change `NODE_ENV` to `development`
+3. Before you push to master, change `NODE_ENV` to `production`
 
-Last updated on 5/11/2021
+Last updated on 5/18/2021
