@@ -42,5 +42,7 @@ git push heroku master
 <br />
 
 #### Start server in development
-`npm run dev`
+command: `npm run dev`
+ <br />
+ <br />
 Last updated on 5/18/2021
