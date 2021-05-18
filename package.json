@@ -1,10 +1,23 @@
 {
   "name": "cse416-commandt-backend",
   "version": "1.0.0",
+  "private": true,
   "description": "Our front-end repository is at here [project-416](https://github.com/janarosmonaliev/project-416).",
   "main": "server.js",
   "engines": {
     "node": "12.18.3"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   },
   "scripts": {
     "start": "node src/server.js",
