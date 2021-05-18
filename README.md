@@ -35,8 +35,11 @@ heroku ps:scale web=1
 git push heroku master
 
 ### Development & Production Configuration
-1. Go to `.env` file.
+#### Set node environment
+<p>1. Go to `.env` file.
 2. If you are developing on Localhost, change `NODE_ENV` to `development`
-3. Before you push to master, change `NODE_ENV` to `production`
-
+3. Before you push to master, change `NODE_ENV` to `production` </p>
+<br />
+#### Start server in development
+<p>`npm run dev`</p>
 Last updated on 5/18/2021
