@@ -5,7 +5,7 @@ const whitelist = ["https://commandt.herokuapp.com", "http://localhost:8000"];
 const corsOptions = {
   origin:
     process.env.NODE_ENV === "production"
-      ? "https://commandt.herokuapp.com"
+      ? whitelist
       : "http://localhost:8000",
   allowedHeaders: [
     "Origin",
