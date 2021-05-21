@@ -12,6 +12,7 @@ const noteRouter = require("./routes/notes");
 const widgetRouter = require("./routes/widgets");
 const bookmarkRouter = require("./routes/bookmarks");
 const todoRouter = require("./routes/todos");
+const backgroundRouter = require("./routes/background");
 //Passport
 const passport = require("passport");
 const passportConfig = require("./passport");
@@ -81,7 +82,7 @@ app.use("/home/notes", noteRouter);
 app.use("/home/widgets", widgetRouter);
 app.use("/home/folders/", bookmarkRouter);
 app.use("/home/todolists/", todoRouter);
-
+app.use("/home/background/", backgroundRouter);
 //Listen
 app.listen(process.env.PORT || 4000, () => {
   console.log("Server started successfully");
