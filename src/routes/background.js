@@ -3,11 +3,11 @@ const User = require("../schemas/user");
 
 //Router
 const router = express.Router();
-
-router.put("/home/background", (req, res) => {
-  const tmp = req.session.userInfo; //using this session variable, we can get current user's _id directly
+//route to /home/background
+router.put("/", (req, res) => {
+  const userId = req.user._id; //using this session variable, we can get current user's _id directly
   User.updateOne(
-    { _id: tmp._id },
+    { _id: userId },
     {
       $set: {
         backgroundImg: {
