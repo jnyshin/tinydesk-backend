@@ -33,7 +33,7 @@ router.put("/", (req, res) => {
   // newTodolist.save();
   // const newId = newTodolist._id;
   const todolistId = mongoose.Types.ObjectId(req.body._id);
-  console.log("Which todolsit to update: ", todolistId);
+  console.log("Which todolsit to update in back: ", todolistId);
   Todolist.updateOne(
     { _id: todolistId },
     { $set: { title: req.body.title } }
