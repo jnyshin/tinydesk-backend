@@ -28,7 +28,9 @@ router.post("/", (req, res) => {
 router.delete("/", (req, res) => {
   //changed from const tmp = req.session.user
   const userId = req.user._id;
-  const folderId = mongoose.Types.ObjectId(req.body.removeId);
+
+  console.log("Folder to delete in back: ", req.body.remove);
+  const folderId = mongoose.Types.ObjectId(req.body.remove);
   Folder.deleteOne({ id: folderId }, async (err, doc) => {
     if (err) throw err;
     if (doc) console.log(doc);
@@ -42,5 +44,6 @@ router.delete("/", (req, res) => {
       }
     }
   );
+  res.send("Checked");
 });
 module.exports = router;
