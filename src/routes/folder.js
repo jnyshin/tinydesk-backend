@@ -12,14 +12,13 @@ router.post("/", (req, res) => {
   console.log(req.body.title);
   const newFolder = new Folder({ title: req.body.title, bookmarks: [] });
   newFolder.save();
-  // console.log(tmp.name);
-
-  //Changed tmp._id
+  const newId = newFolder._id;
   User.updateOne({ _id: userId }, { $push: { folders: newFolder._id } }).exec(
     (err, doc) => {
       if (err) throw err;
       if (doc) {
-        res.send(doc);
+        console.log("New Folder's id is", newId);
+        res.send(newId);
       }
     }
   );
@@ -46,4 +45,34 @@ router.delete("/", (req, res) => {
   );
   res.send("Checked");
 });
+
+//arrange folder order
+router.put("/order", (req, res) => {
+  const userId = req.user._id;
+  const folderId = req.body._id;
+  const newIndex = req.body.newIndex;
+  console.log("change to position ", newIndex);
+  //remove the original
+  User.updateOne({ _id: userId }, { $pull: { folders: folderId } }).exec(
+    (err, doc) => {
+      if (err) throw err;
+      if (doc) {
+        console.log("folder pulled ", folderId);
+      }
+      //put the todolist into new index position
+      User.updateOne(
+        { _id: userId },
+        { $push: { folders: { $each: [folderId], $position: newIndex } } }
+      ).exec((err, doc) => {
+        if (err) throw err;
+        if (doc) {
+          //User.save();
+          console.log("folder pushed into ", newIndex);
+          res.send(doc);
+        }
+      });
+    }
+  );
+});
+
 module.exports = router;
