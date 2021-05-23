@@ -50,11 +50,15 @@ router.put("/", (req, res) => {
 router.delete("/", (req, res) => {
   //changed from const tmp = req.session.user
   const userId = req.user._id;
-  console.log(req.body.removeId);
-  const todolistId = mongoose.Types.ObjectId(req.body.removeId);
-  Todolist.deleteOne({ id: todolistId }, async (err, doc) => {
+
+  //const todolistId = mongoose.Types.ObjectId(req.body.removeId);
+  const todolistId = req.body.removeId;
+  console.log("got this todolist's id: ", todolistId);
+  Todolist.deleteOne({ _id: todolistId }).exec((err, doc) => {
     if (err) throw err;
-    if (doc) console.log(doc);
+    if (doc) {
+      console.log(doc);
+    }
   });
   //Changed tmp._id
   User.updateOne({ _id: userId }, { $pull: { todolists: todolistId } }).exec(
