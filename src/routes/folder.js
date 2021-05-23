@@ -75,4 +75,17 @@ router.put("/order", (req, res) => {
   );
 });
 
+//Change folder title
+router.put("/", (req, res) => {
+  const folderId = mongoose.Types.ObjectId(req.body._id);
+  Folder.updateOne({ _id: folderId }, { $set: { title: req.body.title } }).exec(
+    (err, doc) => {
+      if (err) throw err;
+      if (doc) {
+        res.send(doc);
+      }
+    }
+  );
+});
+
 module.exports = router;
