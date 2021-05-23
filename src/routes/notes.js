@@ -19,7 +19,7 @@ router.post("/", (req, res) => {
       if (doc) {
         //User.save();
         console.log("note added");
-        res.send(doc);
+        res.send(newNote._id);
       }
     }
   );
