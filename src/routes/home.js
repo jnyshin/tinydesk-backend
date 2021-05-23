@@ -23,7 +23,7 @@ router.get("/", async (req, res) => {
     .exec((err, doc) => {
       if (err) throw err;
       if (doc) {
-        // console.log(doc);
+        console.log(doc);
         res.send(doc);
       }
     });
