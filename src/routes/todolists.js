@@ -25,15 +25,10 @@ router.post("/", (req, res) => {
   });
 });
 
+//change title
 router.put("/", (req, res) => {
-  //USE const userId = req.userId to get ID
-
-  //const tmp = req.session.userInfo; //using this session variable, we can get current user's _id directly
-  // const newTodolist = new Todolist({ title: "", bookmarks: [] });
-  // newTodolist.save();
-  // const newId = newTodolist._id;
   const todolistId = mongoose.Types.ObjectId(req.body._id);
-  console.log("Which todolsit to update: ", todolistId);
+  console.log("Which todolsit to update in back: ", todolistId);
   Todolist.updateOne(
     { _id: todolistId },
     { $set: { title: req.body.title } }
@@ -50,11 +45,13 @@ router.put("/", (req, res) => {
 router.delete("/", (req, res) => {
   //changed from const tmp = req.session.user
   const userId = req.user._id;
-  console.log(req.body.removeId);
-  const todolistId = mongoose.Types.ObjectId(req.body.removeId);
-  Todolist.deleteOne({ id: todolistId }, async (err, doc) => {
+  const todolistId = req.body.removeId;
+  console.log("got this todolist's id: ", todolistId);
+  Todolist.deleteOne({ _id: todolistId }).exec((err, doc) => {
     if (err) throw err;
-    if (doc) console.log(doc);
+    if (doc) {
+      console.log(doc);
+    }
   });
   //Changed tmp._id
   User.updateOne({ _id: userId }, { $pull: { todolists: todolistId } }).exec(
@@ -63,8 +60,38 @@ router.delete("/", (req, res) => {
       if (doc) {
         console.log("todolist deleted");
         //no more tmp
-        // res.send(tmp.todolists);
+        res.send(doc);
       }
+    }
+  );
+});
+
+//url is /home/todolists/order
+router.put("/order", (req, res) => {
+  const userId = req.user._id;
+  const todolistId = req.body._id;
+  const newIndex = req.body.newIndex;
+  console.log("change to position ", newIndex);
+  //remove the original
+  User.updateOne({ _id: userId }, { $pull: { todolists: todolistId } }).exec(
+    (err, doc) => {
+      if (err) throw err;
+      if (doc) {
+        //User.save();
+        console.log("todolist pulled ", todolistId);
+      }
+      //put the todolist into new index position
+      User.updateOne(
+        { _id: userId },
+        { $push: { todolists: { $each: [todolistId], $position: newIndex } } }
+      ).exec((err, doc) => {
+        if (err) throw err;
+        if (doc) {
+          //User.save();
+          console.log("todolist pushed into ", newIndex);
+          res.send();
+        }
+      });
     }
   );
 });

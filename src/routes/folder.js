@@ -12,14 +12,13 @@ router.post("/", (req, res) => {
   console.log(req.body.title);
   const newFolder = new Folder({ title: req.body.title, bookmarks: [] });
   newFolder.save();
-  // console.log(tmp.name);
-
-  //Changed tmp._id
+  const newId = newFolder._id;
   User.updateOne({ _id: userId }, { $push: { folders: newFolder._id } }).exec(
     (err, doc) => {
       if (err) throw err;
       if (doc) {
-        res.send(doc);
+        console.log("New Folder's id is", newId);
+        res.send(newId);
       }
     }
   );
@@ -28,7 +27,9 @@ router.post("/", (req, res) => {
 router.delete("/", (req, res) => {
   //changed from const tmp = req.session.user
   const userId = req.user._id;
-  const folderId = mongoose.Types.ObjectId(req.body.removeId);
+
+  console.log("Folder to delete in back: ", req.body.remove);
+  const folderId = mongoose.Types.ObjectId(req.body.remove);
   Folder.deleteOne({ id: folderId }, async (err, doc) => {
     if (err) throw err;
     if (doc) console.log(doc);
@@ -42,5 +43,49 @@ router.delete("/", (req, res) => {
       }
     }
   );
+  res.send("Checked");
 });
+
+//arrange folder order
+router.put("/order", (req, res) => {
+  const userId = req.user._id;
+  const folderId = req.body._id;
+  const newIndex = req.body.newIndex;
+  console.log("change to position ", newIndex);
+  //remove the original
+  User.updateOne({ _id: userId }, { $pull: { folders: folderId } }).exec(
+    (err, doc) => {
+      if (err) throw err;
+      if (doc) {
+        console.log("folder pulled ", folderId);
+      }
+      //put the todolist into new index position
+      User.updateOne(
+        { _id: userId },
+        { $push: { folders: { $each: [folderId], $position: newIndex } } }
+      ).exec((err, doc) => {
+        if (err) throw err;
+        if (doc) {
+          //User.save();
+          console.log("folder pushed into ", newIndex);
+          res.send(doc);
+        }
+      });
+    }
+  );
+});
+
+//Change folder title
+router.put("/", (req, res) => {
+  const folderId = mongoose.Types.ObjectId(req.body._id);
+  Folder.updateOne({ _id: folderId }, { $set: { title: req.body.title } }).exec(
+    (err, doc) => {
+      if (err) throw err;
+      if (doc) {
+        res.send(doc);
+      }
+    }
+  );
+});
+
 module.exports = router;
