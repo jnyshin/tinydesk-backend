@@ -25,13 +25,8 @@ router.post("/", (req, res) => {
   });
 });
 
+//change title
 router.put("/", (req, res) => {
-  //USE const userId = req.userId to get ID
-
-  //const tmp = req.session.userInfo; //using this session variable, we can get current user's _id directly
-  // const newTodolist = new Todolist({ title: "", bookmarks: [] });
-  // newTodolist.save();
-  // const newId = newTodolist._id;
   const todolistId = mongoose.Types.ObjectId(req.body._id);
   console.log("Which todolsit to update in back: ", todolistId);
   Todolist.updateOne(
@@ -50,8 +45,6 @@ router.put("/", (req, res) => {
 router.delete("/", (req, res) => {
   //changed from const tmp = req.session.user
   const userId = req.user._id;
-
-  //const todolistId = mongoose.Types.ObjectId(req.body.removeId);
   const todolistId = req.body.removeId;
   console.log("got this todolist's id: ", todolistId);
   Todolist.deleteOne({ _id: todolistId }).exec((err, doc) => {
@@ -73,6 +66,7 @@ router.delete("/", (req, res) => {
   );
 });
 
+//url is /home/todolists/order
 router.put("/order", (req, res) => {
   const userId = req.user._id;
   const todolistId = req.body._id;
@@ -85,22 +79,21 @@ router.put("/order", (req, res) => {
       if (doc) {
         //User.save();
         console.log("todolist pulled ", todolistId);
-        res.send(doc);
       }
+      //put the todolist into new index position
+      User.updateOne(
+        { _id: userId },
+        { $push: { todolists: { $each: [todolistId], $position: newIndex } } }
+      ).exec((err, doc) => {
+        if (err) throw err;
+        if (doc) {
+          //User.save();
+          console.log("todolist pushed into ", newIndex);
+          res.send();
+        }
+      });
     }
   );
-  //put the todolist into new index position
-  User.updateOne(
-    { _id: userId },
-    { $push: { todolists: { $each: [todolistId], $position: newIndex } } }
-  ).exec((err, doc) => {
-    if (err) throw err;
-    if (doc) {
-      //User.save();
-      console.log("todolist pushed into ", newIndex);
-      res.send();
-    }
-  });
 });
 
 module.exports = router;
