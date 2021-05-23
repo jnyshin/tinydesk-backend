@@ -63,10 +63,40 @@ router.delete("/", (req, res) => {
       if (doc) {
         console.log("todolist deleted");
         //no more tmp
-        // res.send(tmp.todolists);
+        res.send(doc);
       }
     }
   );
+});
+
+router.put("/order", (req, res) => {
+  const userId = req.user._id;
+  const todolistId = req.body._id;
+  const newIndex = req.body.newIndex;
+  console.log("change to position ", newIndex);
+  //remove the original
+  User.updateOne({ _id: userId }, { $pull: { todolists: todolistId } }).exec(
+    (err, doc) => {
+      if (err) throw err;
+      if (doc) {
+        //User.save();
+        console.log("todolist pulled ", todolistId);
+        res.send(doc);
+      }
+    }
+  );
+  //put the todolist into new index position
+  User.updateOne(
+    { _id: userId },
+    { $push: { todolists: { $each: [todolistId], $position: newIndex } } }
+  ).exec((err, doc) => {
+    if (err) throw err;
+    if (doc) {
+      //User.save();
+      console.log("todolist pushed into ", newIndex);
+      res.send();
+    }
+  });
 });
 
 module.exports = router;
