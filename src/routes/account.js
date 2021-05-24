@@ -23,4 +23,17 @@ router.put("/", (req, res) => {
   );
 });
 
+//delete account
+router.delete("/", (req, res) => {
+  const userId = req.user._id;
+  console.log("remove user with this _id: ", userId);
+  User.deleteOne({ _id: userId }).exec((err, doc) => {
+    if (err) throw err;
+    if (doc) {
+      console.log(doc);
+      res.send("Successfully deleted the account");
+    }
+  });
+});
+
 module.exports = router;
