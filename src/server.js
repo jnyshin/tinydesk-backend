@@ -83,6 +83,21 @@ app.use("/home/widgets", widgetRouter);
 app.use("/home/folders/", bookmarkRouter);
 app.use("/home/todolists/", todoRouter);
 app.use("/home/background/", backgroundRouter);
+
+//code to get thumbnail image of bookmark
+app.post("/bookmark", async (req, res) => {
+  try {
+    const url =
+      "https://www3.cs.stonybrook.edu/~alexkuhn/cse416-spring2021/schedule.html"; //replace this with request body
+    const { hostname } = new URL(url);
+    const faviconUrl = "chrome://favicon/https://" + hostname;
+    console.log(faviconUrl);
+    res.send(faviconUrl);
+  } catch (e) {
+    console.log(e);
+  }
+});
+
 //Listen
 app.listen(process.env.PORT || 4000, () => {
   console.log("Server started successfully");
