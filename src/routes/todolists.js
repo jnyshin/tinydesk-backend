@@ -9,7 +9,7 @@ const router = express.Router();
 // Routes = /home/todolist
 router.post("/", (req, res) => {
   const userId = req.user._id; //using this session variable, we can get current user's _id directly
-  const newTodolist = new Todolist({ title: "", bookmarks: [] });
+  const newTodolist = new Todolist({ title: "", todos: [] });
   newTodolist.save();
   const newId = newTodolist._id;
   User.updateOne(
