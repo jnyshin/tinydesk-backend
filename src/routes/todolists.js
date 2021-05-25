@@ -14,15 +14,16 @@ router.post("/", (req, res) => {
   const newId = newTodolist._id;
   User.updateOne(
     { _id: userId },
-    { $push: { todolists: newTodolist._id } }
-  ).exec((err, doc) => {
-    if (err) throw err;
-    if (doc) {
-      //User.save();
-      console.log("New Todolist's id is", newId);
-      res.send(newId);
+    { $push: { todolists: newTodolist._id } },
+    async (err, doc) => {
+      if (err) throw err;
+      if (doc) {
+        //User.save();
+        console.log("New Todolist's id is", newId);
+        res.send(newId);
+      }
     }
-  });
+  );
 });
 
 //change title
@@ -31,15 +32,16 @@ router.put("/", (req, res) => {
   console.log("Which todolsit to update in back: ", todolistId);
   Todolist.updateOne(
     { _id: todolistId },
-    { $set: { title: req.body.title } }
-  ).exec((err, doc) => {
-    if (err) throw err;
-    if (doc) {
-      //User.save();
-      console.log("Updated Todolist's title");
-      res.send(doc);
+    { $set: { title: req.body.title } },
+    async (err, doc) => {
+      if (err) throw err;
+      if (doc) {
+        //User.save();
+        console.log("Updated Todolist's title");
+        res.send(doc);
+      }
     }
-  });
+  );
 });
 
 router.delete("/", (req, res) => {
@@ -47,15 +49,17 @@ router.delete("/", (req, res) => {
   const userId = req.user._id;
   const todolistId = req.body.removeId;
   console.log("got this todolist's id: ", todolistId);
-  Todolist.deleteOne({ _id: todolistId }).exec((err, doc) => {
+  Todolist.deleteOne({ _id: todolistId }, async (err, doc) => {
     if (err) throw err;
     if (doc) {
       console.log(doc);
     }
   });
   //Changed tmp._id
-  User.updateOne({ _id: userId }, { $pull: { todolists: todolistId } }).exec(
-    (err, doc) => {
+  User.updateOne(
+    { _id: userId },
+    { $pull: { todolists: todolistId } },
+    async (err, doc) => {
       if (err) throw err;
       if (doc) {
         console.log("todolist deleted");

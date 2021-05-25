@@ -79,7 +79,7 @@ passportConfig();
 app.use("/", authRouter);
 app.use("/home", homeRouter);
 app.use("/home/folder", folderRouter);
-// app.use("/home/todolists", todolistRouter);
+app.use("/home/todolists", todolistRouter);
 app.use("/home/notes", noteRouter);
 app.use("/home/widgets", widgetRouter);
 app.use("/home/folders/", bookmarkRouter);
