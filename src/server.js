@@ -83,7 +83,7 @@ app.use("/home/todolists", todolistRouter);
 app.use("/home/notes", noteRouter);
 app.use("/home/widgets", widgetRouter);
 app.use("/home/folders/", bookmarkRouter);
-app.use("/home/todolists/", todoRouter);
+// app.use("/home/todolists/", todoRouter);
 app.use("/home/background/", backgroundRouter);
 app.use("/home/account/", accountRouter);
 app.use("/home/calendar", calendarRouter);
