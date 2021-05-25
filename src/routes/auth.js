@@ -58,12 +58,14 @@ router.post("/signup", (req, res) => {
         folders: [newFolder._id],
         backgroundImg: {
           unsplashID: "pic1",
-          url: "https://images.unsplash.com/photo-1481414981591-5732874c7193?crop=entropy&cs=srgb&fm=jpg&ixid=MnwyMjAyNzR8MHwxfHNlYXJjaHw1fHxvcmFuZ2V8ZW58MHwwfHx8MTYxODU1NjAxNQ&ixlib=rb-1.2.1&q=85",
+          url:
+            "https://images.unsplash.com/photo-1481414981591-5732874c7193?crop=entropy&cs=srgb&fm=jpg&ixid=MnwyMjAyNzR8MHwxfHNlYXJjaHw1fHxvcmFuZ2V8ZW58MHwwfHx8MTYxODU1NjAxNQ&ixlib=rb-1.2.1&q=85",
           author: "someone",
         },
         name: req.body.name,
         username: req.body.username,
         keepUnicorn: true,
+        events: [],
       });
       await newUser.save();
       res.send("New user created");
