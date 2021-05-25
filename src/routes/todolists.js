@@ -77,8 +77,10 @@ router.put("/order", (req, res) => {
   const newIndex = req.body.newIndex;
   console.log("change to position ", newIndex);
   //remove the original
-  User.updateOne({ _id: userId }, { $pull: { todolists: todolistId } }).exec(
-    (err, doc) => {
+  User.updateOne(
+    { _id: userId },
+    { $pull: { todolists: todolistId } },
+    async (err, doc) => {
       if (err) throw err;
       if (doc) {
         //User.save();
@@ -87,15 +89,16 @@ router.put("/order", (req, res) => {
       //put the todolist into new index position
       User.updateOne(
         { _id: userId },
-        { $push: { todolists: { $each: [todolistId], $position: newIndex } } }
-      ).exec((err, doc) => {
-        if (err) throw err;
-        if (doc) {
-          //User.save();
-          console.log("todolist pushed into ", newIndex);
-          res.send();
+        { $push: { todolists: { $each: [todolistId], $position: newIndex } } },
+        async (err, doc) => {
+          if (err) throw err;
+          if (doc) {
+            //User.save();
+            console.log("todolist pushed into ", newIndex);
+            res.send();
+          }
         }
-      });
+      );
     }
   );
 });
