@@ -13,6 +13,8 @@ const widgetRouter = require("./routes/widgets");
 const bookmarkRouter = require("./routes/bookmarks");
 const todoRouter = require("./routes/todos");
 const backgroundRouter = require("./routes/background");
+const accountRouter = require("./routes/account");
+const calendarRouter = require("./routes/calendar");
 //Passport
 const passport = require("passport");
 const passportConfig = require("./passport");
@@ -83,6 +85,23 @@ app.use("/home/widgets", widgetRouter);
 app.use("/home/folders/", bookmarkRouter);
 app.use("/home/todolists/", todoRouter);
 app.use("/home/background/", backgroundRouter);
+app.use("/home/account/", accountRouter);
+app.use("/home/calendar", calendarRouter);
+
+//code to get thumbnail image of bookmark
+app.post("/bookmark", async (req, res) => {
+  try {
+    const url =
+      "https://www3.cs.stonybrook.edu/~alexkuhn/cse416-spring2021/schedule.html"; //replace this with request body
+    const { hostname } = new URL(url);
+    const faviconUrl = "chrome://favicon/https://" + hostname;
+    console.log(faviconUrl);
+    res.send(faviconUrl);
+  } catch (e) {
+    console.log(e);
+  }
+});
+
 //Listen
 app.listen(process.env.PORT || 4000, () => {
   console.log("Server started successfully");
