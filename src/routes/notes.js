@@ -1,7 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const User = require("../schemas/user");
-const Note = require("../schemas/todolist_db");
+const Note = require("../schemas/notes_db");
 
 //Router
 const router = express.Router();
@@ -10,7 +10,7 @@ const router = express.Router();
 router.post("/", (req, res) => {
   //changed from const tmp = req.session.user
   const userId = req.user._id;
-  const newNote = new Note({ title: "", content: "" });
+  const newNote = new Note({ title: req.body.title, content: {} });
   newNote.save();
   //Changed tmp._id
   User.updateOne({ _id: userId }, { $push: { notes: newNote._id } }).exec(
