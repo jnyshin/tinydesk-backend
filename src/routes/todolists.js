@@ -9,20 +9,21 @@ const router = express.Router();
 // Routes = /home/todolist
 router.post("/", (req, res) => {
   const userId = req.user._id; //using this session variable, we can get current user's _id directly
-  const newTodolist = new Todolist({ title: "", bookmarks: [] });
+  const newTodolist = new Todolist({ title: req.body.title, todos: [] });
   newTodolist.save();
   const newId = newTodolist._id;
   User.updateOne(
     { _id: userId },
-    { $push: { todolists: newTodolist._id } }
-  ).exec((err, doc) => {
-    if (err) throw err;
-    if (doc) {
-      //User.save();
-      console.log("New Todolist's id is", newId);
-      res.send(newId);
+    { $push: { todolists: newTodolist._id } },
+    async (err, doc) => {
+      if (err) throw err;
+      if (doc) {
+        //User.save();
+        console.log("New Todolist's id is", newId);
+        res.send(newId);
+      }
     }
-  });
+  );
 });
 
 //change title
@@ -31,15 +32,16 @@ router.put("/", (req, res) => {
   console.log("Which todolsit to update in back: ", todolistId);
   Todolist.updateOne(
     { _id: todolistId },
-    { $set: { title: req.body.title } }
-  ).exec((err, doc) => {
-    if (err) throw err;
-    if (doc) {
-      //User.save();
-      console.log("Updated Todolist's title");
-      res.send(doc);
+    { $set: { title: req.body.title } },
+    async (err, doc) => {
+      if (err) throw err;
+      if (doc) {
+        //User.save();
+        console.log("Updated Todolist's title");
+        res.send(doc);
+      }
     }
-  });
+  );
 });
 
 router.delete("/", (req, res) => {
@@ -47,15 +49,17 @@ router.delete("/", (req, res) => {
   const userId = req.user._id;
   const todolistId = req.body.removeId;
   console.log("got this todolist's id: ", todolistId);
-  Todolist.deleteOne({ _id: todolistId }).exec((err, doc) => {
+  Todolist.deleteOne({ _id: todolistId }, async (err, doc) => {
     if (err) throw err;
     if (doc) {
       console.log(doc);
     }
   });
   //Changed tmp._id
-  User.updateOne({ _id: userId }, { $pull: { todolists: todolistId } }).exec(
-    (err, doc) => {
+  User.updateOne(
+    { _id: userId },
+    { $pull: { todolists: todolistId } },
+    async (err, doc) => {
       if (err) throw err;
       if (doc) {
         console.log("todolist deleted");
@@ -73,8 +77,10 @@ router.put("/order", (req, res) => {
   const newIndex = req.body.newIndex;
   console.log("change to position ", newIndex);
   //remove the original
-  User.updateOne({ _id: userId }, { $pull: { todolists: todolistId } }).exec(
-    (err, doc) => {
+  User.updateOne(
+    { _id: userId },
+    { $pull: { todolists: todolistId } },
+    async (err, doc) => {
       if (err) throw err;
       if (doc) {
         //User.save();
@@ -83,15 +89,16 @@ router.put("/order", (req, res) => {
       //put the todolist into new index position
       User.updateOne(
         { _id: userId },
-        { $push: { todolists: { $each: [todolistId], $position: newIndex } } }
-      ).exec((err, doc) => {
-        if (err) throw err;
-        if (doc) {
-          //User.save();
-          console.log("todolist pushed into ", newIndex);
-          res.send();
+        { $push: { todolists: { $each: [todolistId], $position: newIndex } } },
+        async (err, doc) => {
+          if (err) throw err;
+          if (doc) {
+            //User.save();
+            console.log("todolist pushed into ", newIndex);
+            res.send();
+          }
         }
-      });
+      );
     }
   );
 });
