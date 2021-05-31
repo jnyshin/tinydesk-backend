@@ -2,7 +2,7 @@
 
 Our front-end repository is at here [project-416](https://github.com/janarosmonaliev/project-416).
 
-### Also, our main file is "server.js", not "App.js".
+### Also, our main file is "server.js".
 
 This back-end repository is deployed through Heroku [click here](https://commandt-backend.herokuapp.com/).
 Note that only <I>Back End</I> is deployed. Our front-end repository will be deployed through Heroku. 
@@ -12,17 +12,17 @@ This repository is deployed on Heroku. Thus, whenever we make pull request on ma
 
 ### Note on useful commands for the team members when using Heroku CLI:
 
-1. To take the heroku app offline, remove the dyno with the command:
-heroku ps:scale web=0
+1. To take the heroku app offline, remove the dyno with the command: <br />
+`heroku ps:scale web=0`
 
-2. To restart the dyno:
-heroku dyno:restart
+2. To restart the dyno: <br />
+`heroku dyno:restart`
 
-2. To take the heroku app online once again:
-heroku ps:scale web=1
+2. To take the heroku app online once again: <br />
+`heroku ps:scale web=1`
 
-4. To build based on the code pushed to master branch:
-git push heroku master
+4. To build based on the code pushed to master branch: <br />
+`git push heroku master`
 
 ### Development & Production Configuration
 #### Set node environment
