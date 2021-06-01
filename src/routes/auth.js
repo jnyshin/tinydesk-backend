@@ -14,6 +14,7 @@ const router = express.Router();
 
 //Sign Up
 router.post("/signup", (req, res) => {
+
   try {
     User.findOne({ email: req.body.email }, async (err, doc) => {
       if (err) throw err;
@@ -81,23 +82,36 @@ router.post("/signup", (req, res) => {
 
 //Login
 router.post(
-  "/login",
-  passport.authenticate("local", {
-    failureRedirect: "/loginFailure",
-    successRedirect: "/loginSuccess",
-  }),
-  (err, req, res, next) => {
-    if (err) next(err);
-  }
+    "/login",
+    passport.authenticate("local", {
+        failureRedirect: "/loginFailure",
+        successRedirect: "/loginSuccess",
+    }),
+    (err, req, res, next) => {
+        if (err) next(err);
+    }
 );
 router.get("/loginFailure", (req, res) => {
-  return res.send("Invalid");
+    return res.send("Invalid");
 });
 router.get("/loginSuccess", (req, res) => {
-  return res.send("Successfully Authenticated");
+    return res.send("Successfully Authenticated");
 });
 
+// Login with Google 
+router.get('/google',
+    passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+router.get('/google/callback', 
+    passport.authenticate('google', { failureRedirect: '/loginFailure' }),
+    function(req, res) {
+      // Successful authentication, redirect home.
+      return res.redirect('https://commandt.herokuapp.com/home');
+    });
+
+
 //Logout
+
 router.get("/logout", function (req, res) {
   try {
     req.logout();
@@ -107,5 +121,6 @@ router.get("/logout", function (req, res) {
     res.send("error");
     console.log(error);
   }
+
 });
 module.exports = router;
