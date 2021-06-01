@@ -55,13 +55,12 @@ module.exports = function() {
             callbackURL: "https://commandt-backend.herokuapp.com/google/callback"
         },
         async (accessToken, refreshToken, profile, cb) => {
-            
                 try {
-                    const user = await User.findOne({
+                    const existingUser = await User.findOne({
                         where: {googleId: profile.id},
                     });
-                    if (user) {
-                        return cb(null, user);
+                    if (existingUser) {
+                        return cb(null, existingUser);
                     } else {
                         var user = new User();
                         
@@ -186,7 +185,6 @@ module.exports = function() {
                 //   cb(null, newUser);
                 // }
                 // cb(null, doc);
-              
           }
         
     ));
