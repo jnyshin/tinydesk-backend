@@ -60,11 +60,8 @@ module.exports = function() {
                     const user = await User.findOne({
                         where: {googleId: profile.id},
                     });
-                    if (existingUser) {
-                        console.log("-------------------------------");
-                        console.log("There was an existing user already");
-                        console.log("-------------------------------")
-                        return cb(null, exUser);
+                    if (user) {
+                        return cb(null, user);
                     } else {
                         var user = new User();
                         
