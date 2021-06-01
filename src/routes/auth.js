@@ -8,6 +8,9 @@ const Note = require("../schemas/notes_db");
 const Todolist = require("../schemas/todolist_db");
 const Todo = require("../schemas/todo_db");
 
+// Development or Production?
+NODE_ENV = process.env.NODE_ENV;
+
 // Create a cookie
 
 const router = express.Router();
@@ -89,6 +92,12 @@ router.get("/loginSuccess", (req, res) => {
     return res.send("Successfully Authenticated");
 });
 
+let redirect_url;
+if (NODE_ENV == "development"){
+    redirect_url = 'http://localhost:8000/home'
+} else {
+    redirect_url = 'https://commandt.herokuapp.com/home'
+}
 // Login with Google 
 router.get('/google',
     passport.authenticate('google', { scope: ['profile', 'email'] }));
@@ -97,7 +106,7 @@ router.get('/google/callback',
     passport.authenticate('google', { failureRedirect: '/loginFailure' }),
     function(req, res) {
       // Successful authentication, redirect home.
-      return res.redirect('https://commandt.herokuapp.com/home');
+      return res.redirect(redirect_url);
     });
 
 

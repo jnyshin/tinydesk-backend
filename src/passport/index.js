@@ -9,7 +9,14 @@ const Note = require("../schemas/notes_db");
 const Todolist = require("../schemas/todolist_db");
 const Todo = require("../schemas/todo_db");
 
-const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET } = process.env;
+const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, NODE_ENV} = process.env;
+
+let callback_url;
+if (NODE_ENV == "development"){
+    callback_url = "http://localhost:4000/google/callback";
+} else {
+    callback_url = "https://commandt-backend.herokuapp.com/google/callback";
+}
 
 module.exports = function() {
     passport.serializeUser((user, done) => {
@@ -52,7 +59,7 @@ module.exports = function() {
     passport.use(new GoogleStrategy({
             clientID: GOOGLE_CLIENT_ID,
             clientSecret: GOOGLE_CLIENT_SECRET,
-            callbackURL: "https://commandt-backend.herokuapp.com/google/callback"
+            callbackURL: callback_url
         },
         async (accessToken, refreshToken, profile, cb) => {
             User.findOne({ googleId: profile.id }, async (err, doc) => {
