@@ -9,20 +9,26 @@ const router = express.Router();
 //Router = /home/notes
 router.post("/", (req, res) => {
   //changed from const tmp = req.session.user
-  const userId = req.user._id;
-  const newNote = new Note({ title: req.body.title, content: {} });
-  newNote.save();
-  //Changed tmp._id
-  User.updateOne({ _id: userId }, { $push: { notes: newNote._id } }).exec(
-    (err, doc) => {
-      if (err) throw err;
-      if (doc) {
-        //User.save();
-        console.log("note added");
-        res.send(newNote._id);
+  try {
+    const userId = req.user._id;
+    const newNote = new Note({ title: req.body.title, content: {} });
+    newNote.save();
+    //Changed tmp._id
+    User.updateOne({ _id: userId }, { $push: { notes: newNote._id } }).exec(
+      (err, doc) => {
+        if (err) throw err;
+        if (doc) {
+          //User.save();
+          console.log("note added");
+          res.send(newNote._id);
+        }
       }
-    }
-  );
+    );
+  } catch (error) {
+    console.log("There was an error");
+    res.send("Could not add note");
+    console.log(error);
+  }
 });
 
 // --------------------------------------------------
