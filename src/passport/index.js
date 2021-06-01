@@ -56,13 +56,13 @@ module.exports = function() {
         },
         async (accessToken, refreshToken, profile, cb) => {
                 try {
-                    const existingUser = await User.findOne({
-                        where: {googleId: profile.id},
+                    const user = await User.findOne({
+                        googleId: profile.id
                     });
-                    if (existingUser) {
-                        return cb(null, existingUser);
+                    if (user) {
+                        return cb(null, user);
                     } else {
-                        var user = new User();
+                        user = new User();
                         
                         // ------------
                         const newBookmark = new Bookmark({
