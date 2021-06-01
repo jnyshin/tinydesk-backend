@@ -14,7 +14,6 @@ const router = express.Router();
 
 //Sign Up
 router.post("/signup", (req, res) => {
-  console.log(req.body.city);
     User.findOne({ email: req.body.email }, async(err, doc) => {
         if (err) throw err;
         if (doc) res.send("user Already Exists");
@@ -45,7 +44,7 @@ router.post("/signup", (req, res) => {
             await newTodolist.save();
             //make an initial note
             const newNote = new Note({
-                title: "New Npte",
+                title: "New Note",
                 content: "Welcome to Command T!",
             });
             await newNote.save();
@@ -64,6 +63,7 @@ router.post("/signup", (req, res) => {
                 name: req.body.name,
                 username: req.body.username,
                 keepUnicorn: true,
+                events: [],
             });
             await newUser.save();
             res.send("New user created");

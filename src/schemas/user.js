@@ -13,6 +13,7 @@ const user = new mongoose.Schema({
   username: { type: String, required: true },
   keepUnicorn: Boolean,
   
+  events: [{ type: mongoose.Schema.Types.ObjectId, ref: "Calendar" }],
 });
 
 module.exports = mongoose.model("User", user);
