@@ -45,7 +45,7 @@ router.post("/signup", (req, res) => {
       await newTodolist.save();
       //make an initial note
       const newNote = new Note({
-        title: "New Npte",
+        title: "New Note",
         content: "Welcome to Command T!",
       });
       await newNote.save();
