@@ -101,7 +101,16 @@ module.exports = function() {
 
                         user.googleId = profile.id;
                         user.email = profile.emails[0].value;
-                        user.location = "";
+                        user.location = {
+                            "id": 1843561,
+                            "name": "Incheon",
+                            "state": "",
+                            "country": "KR",
+                            "coord": {
+                                "lon": 126.416107,
+                                "lat": 37.450001
+                            }
+                        };
                         user.notes = [newNote._id]
                         user.todolists = [newTodolist._id];
                         user.folders = [newFolder._id];
