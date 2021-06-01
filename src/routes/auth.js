@@ -74,7 +74,7 @@ router.post("/signup", (req, res) => {
     });
   } catch (error) {
     console.log("There was an error");
-    res.send("Could not make new account");
+    res.send("error");
     console.log(error);
   }
 });
@@ -104,7 +104,7 @@ router.get("/logout", function (req, res) {
     res.send("Successful logout");
   } catch (error) {
     console.log("There was an error");
-    res.send("Could not logout");
+    res.send("error");
     console.log(error);
   }
 });

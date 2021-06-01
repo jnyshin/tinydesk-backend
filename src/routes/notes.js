@@ -26,7 +26,7 @@ router.post("/", (req, res) => {
     );
   } catch (error) {
     console.log("There was an error");
-    res.send("Could not add note");
+    res.send("error");
     console.log(error);
   }
 });

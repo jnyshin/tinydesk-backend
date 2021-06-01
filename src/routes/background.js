@@ -25,7 +25,7 @@ router.put("/", (req, res) => {
     });
   } catch (error) {
     console.log("There was an error");
-    res.send("Could not save change");
+    res.send("error");
     console.log(error);
   }
   // User.findOne({ _id: tmp._id }, async (err, doc) => {

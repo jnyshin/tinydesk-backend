@@ -27,7 +27,7 @@ router.post("/", (req, res) => {
     );
   } catch (error) {
     console.log("There was an error");
-    res.send("Could not add a todolist");
+    res.send("error");
     console.log(error);
   }
 });
@@ -51,7 +51,7 @@ router.put("/", (req, res) => {
     );
   } catch (error) {
     console.log("There was an error");
-    res.send("Could not change the title");
+    res.send("error");
     console.log(error);
   }
 });
@@ -83,7 +83,7 @@ router.delete("/", (req, res) => {
     );
   } catch (error) {
     console.log("There was an error");
-    res.send("Could not delete the folder");
+    res.send("error");
     console.log(error);
   }
 });
@@ -124,7 +124,7 @@ router.put("/order", (req, res) => {
     );
   } catch (error) {
     console.log("There was an error");
-    res.send("Could not change the order");
+    res.send("error");
     console.log(error);
   }
 });

@@ -30,7 +30,7 @@ router.post("/", (req, res) => {
     );
   } catch (error) {
     console.log("There was an error");
-    res.send("Could not add the event");
+    res.send("error");
     console.log(error);
   }
 });
@@ -53,7 +53,7 @@ router.put("/title", (req, res) => {
     });
   } catch (error) {
     console.log("There was an error");
-    res.send("Could not change the event's title");
+    res.send("error");
     console.log(error);
   }
 });
@@ -99,7 +99,7 @@ router.put("/dates", (req, res) => {
     }
   } catch (error) {
     console.log("There was an error");
-    res.send("Could not change event's dates");
+    res.send("error");
     console.log(error);
   }
 });
@@ -130,7 +130,7 @@ router.delete("/", (req, res) => {
     );
   } catch (error) {
     console.log("There was an error");
-    res.send("Could not delete event");
+    res.send("error");
     console.log(error);
   }
 });

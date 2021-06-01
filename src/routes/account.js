@@ -24,7 +24,7 @@ router.put("/", (req, res) => {
     );
   } catch (error) {
     console.log("There was an error");
-    res.send("Could not save changes");
+    res.send("error");
     console.log(error);
   }
 });
@@ -43,7 +43,7 @@ router.delete("/", (req, res) => {
     });
   } catch (error) {
     console.log("There was an error");
-    res.send("Could not delete account");
+    res.send("error");
     console.log(error);
   }
 });

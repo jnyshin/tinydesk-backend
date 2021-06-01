@@ -25,7 +25,7 @@ router.post("/", (req, res) => {
     );
   } catch (error) {
     console.log("There was an error");
-    res.send("Could not add folder");
+    res.send("error");
     console.log(error);
   }
 });
@@ -53,7 +53,7 @@ router.delete("/", (req, res) => {
     res.send("Checked");
   } catch (error) {
     console.log("There was an error");
-    res.send("Could not delete the folder");
+    res.send("error");
     console.log(error);
   }
 });
@@ -88,7 +88,7 @@ router.put("/order", (req, res) => {
     );
   } catch (error) {
     console.log("There was an error");
-    res.send("Could not arrange order");
+    res.send("error");
     console.log(error);
   }
 });
@@ -108,7 +108,7 @@ router.put("/", (req, res) => {
     });
   } catch (error) {
     console.log("There was an error");
-    res.send("Could not change the folder's title");
+    res.send("error");
     console.log(error);
   }
 });
