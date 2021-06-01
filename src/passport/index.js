@@ -127,7 +127,7 @@ module.exports = function() {
                         user.keepUnicorn = true;
                         user.events = [];
 
-                        user.save();
+                        await user.save();
 
                         console.log("User successfully saved into the database!")
 
