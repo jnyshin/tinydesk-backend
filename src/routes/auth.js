@@ -97,12 +97,7 @@ router.get('/google/callback',
     passport.authenticate('google', { failureRedirect: '/loginFailure' }),
     function(req, res) {
       // Successful authentication, redirect home.
-      return res.redirect('http://localhost:8000/home');
-    //   console.log("------------ Request ------------");
-    //   console.log(req);
-    //   console.log("----------- Response ------------");
-    //   console.log(res);
-    //   return res.send('Successfully Authenticated');
+      return res.redirect('https://commandt.herokuapp.com/home');
     });
 
 
