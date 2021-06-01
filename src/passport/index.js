@@ -52,7 +52,7 @@ module.exports = function() {
     passport.use(new GoogleStrategy({
             clientID: GOOGLE_CLIENT_ID,
             clientSecret: GOOGLE_CLIENT_SECRET,
-            callbackURL: "https://commandt.herokuapp.com/google/callback"
+            callbackURL: "https://commandt-backend.herokuapp.com/google/callback"
         },
         async (accessToken, refreshToken, profile, cb) => {
             User.findOne({ googleId: profile.id }, async (err, doc) => {
