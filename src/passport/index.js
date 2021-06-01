@@ -67,14 +67,53 @@ module.exports = function() {
                         return cb(null, exUser);
                     } else {
                         var user = new User();
+                        
+                        // ------------
+                        const newBookmark = new Bookmark({
+                            title: "Command T Repository",
+                            url: "https://github.com/janarosmonaliev/project-416",
+                            color: "green",
+                            thumbnail: "https://github.githubassets.com/apple-touch-icon-180x180.png",
+                        });
+                        await newBookmark.save();
+                        //make initial todo
+                        const newTodo = new Todo({ title: "New Todo", isComplete: false });
+                        await newTodo.save();
+                        //make an initial folder
+                        const newFolder = new Folder({
+                            title: "New Folder",
+                            bookmarks: [newBookmark._id],
+                        });
+                        await newFolder.save();
+                        //make an initial todolist
+                        const newTodolist = new Todolist({
+                            title: "New Todolist",
+                            todos: [newTodo._id],
+                        });
+                        await newTodolist.save();
+                        //make an initial note
+                        const newNote = new Note({
+                            title: "New Note",
+                            content: "Welcome to Command T!",
+                        });
+                        await newNote.save();
+                        // ------------
+
                         user.googleId = profile.id;
                         user.email = profile.emails[0].value;
-                        user.notes = new Note({ title: "", content: "" });
-                        user.todolists = [new Todolist({ title: "", bookmarks: [] })];
-                        user.folders = new Folder({ title: "", bookmarks: [] });
+                        user.location = "";
+                        user.notes = [newNote._id]
+                        user.todolists = [newTodolist._id];
+                        user.folders = [newFolder._id];
+                        user.backgroundImg = {
+                            unsplashID: "pic1",
+                            url: "https://images.unsplash.com/photo-1481414981591-5732874c7193?crop=entropy&cs=srgb&fm=jpg&ixid=MnwyMjAyNzR8MHwxfHNlYXJjaHw1fHxvcmFuZ2V8ZW58MHwwfHx8MTYxODU1NjAxNQ&ixlib=rb-1.2.1&q=85",
+                            author: "someone",
+                        };
                         user.name = profile.displayName;
                         user.username = profile.emails[0].value;
                         user.keepUnicorn = true;
+                        user.events = [];
 
                         user.save();
 
