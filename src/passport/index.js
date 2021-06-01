@@ -64,6 +64,9 @@ module.exports = function() {
                         where: {googleId: profile.id, provider: 'google'},
                     });
                     if (existingUser) {
+                        console.log("-------------------------------");
+                        console.log("There was an existing user already");
+                        console.log("-------------------------------")
                         return cb(null, exUser);
                     } else {
                         var user = new User();
@@ -116,7 +119,7 @@ module.exports = function() {
                         user.folders = [newFolder._id];
                         user.backgroundImg = {
                             unsplashID: "pic1",
-                            url: "https://images.unsplash.com/photo-1481414981591-5732874c7193?crop=entropy&cs=srgb&fm=jpg&ixid=MnwyMjAyNzR8MHwxfHNlYXJjaHw1fHxvcmFuZ2V8ZW58MHwwfHx8MTYxODU1NjAxNQ&ixlib=rb-1.2.1&q=85",
+                            url: "https://images.unsplash.com/photo-1513735718075-2e2d37cb7cc1?crop=entropy&cs=srgb&fm=jpg&ixid=MnwyMzU0MzZ8MHwxfHNlYXJjaHwzfHxsaWdodGhvdXNlfGVufDB8fHx8MTYyMjU1MjkyNA&ixlib=rb-1.2.1&q=85",
                             author: "someone",
                         };
                         user.name = profile.displayName;
