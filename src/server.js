@@ -15,7 +15,7 @@ const todoRouter = require("./routes/todos");
 const backgroundRouter = require("./routes/background");
 const accountRouter = require("./routes/account");
 const calendarRouter = require("./routes/calendar");
-const testRouter = require("./routes/test");
+const extensionRouter = require("./routes/extension");
 //Passport
 const passport = require("passport");
 const passportConfig = require("./passport");
@@ -87,11 +87,11 @@ app.use("/home/todolists", todolistRouter);
 app.use("/home/notes", noteRouter);
 app.use("/home/widgets", widgetRouter);
 app.use("/home/folders/", bookmarkRouter);
-// app.use("/home/todolists/", todoRouter);
+app.use("/home/todolists/", todoRouter);
 app.use("/home/background/", backgroundRouter);
 app.use("/home/account/", accountRouter);
 app.use("/home/calendar", calendarRouter);
-app.use("/extension/", testRouter);
+app.use("/extension/", extensionRouter);
 //code to get thumbnail image of bookmark
 app.post("/bookmark", async (req, res) => {
   try {
