@@ -36,7 +36,7 @@ router.get("/", async (req, res) => {
       });
   } catch (error) {
     console.log("There was an error");
-    res.send("no uid");
+    res.send("error");
     console.log(error);
   }
 });
