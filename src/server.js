@@ -15,6 +15,7 @@ const todoRouter = require("./routes/todos");
 const backgroundRouter = require("./routes/background");
 const accountRouter = require("./routes/account");
 const calendarRouter = require("./routes/calendar");
+const extensionRouter = require("./routes/extension");
 //Passport
 const passport = require("passport");
 const passportConfig = require("./passport");
@@ -49,6 +50,7 @@ app.use(corsMiddleware);
 const sessionStore = new MongoStore({
   mongoUrl: MONGO_URI,
   collectionName: "sessions",
+  stringify: false,
 });
 // //Passport Configuration
 //Need to be in order!
@@ -56,12 +58,14 @@ app.set("trust proxy", 1);
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
-    name: "commandt.sid",
+    name: process.env.COOKIE_NAME,
     saveUninitialized: true,
     resave: false,
     cookie: {
       maxAge: 1000 * 60 * 60 * 24 * 7, //7 days
-      httpOnly: true,
+      // httpOnly: true,
+      httpOnly: false,
+
       // 2nd change.
       secure: process.env.NODE_ENV === "production",
       sameSite: process.env.NODE_ENV === "production" ? "none" : "",
@@ -87,7 +91,7 @@ app.use("/home/todos/", todoRouter);
 app.use("/home/background/", backgroundRouter);
 app.use("/home/account/", accountRouter);
 app.use("/home/calendar", calendarRouter);
-
+app.use("/extension/", extensionRouter);
 //code to get thumbnail image of bookmark
 app.post("/bookmark", async (req, res) => {
   try {

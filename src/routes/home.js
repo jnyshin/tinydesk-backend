@@ -1,11 +1,17 @@
 const express = require("express");
-
+require("dotenv").config();
+const cookie = require("cookie");
 const User = require("../schemas/user");
 const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
     const userId = req.user._id;
+    const cookieValue = cookie.parse(req.headers.cookie)[
+      process.env.COOKIE_NAME
+    ];
+    console.log(cookieValue);
+    req.session.cookieVal = cookieValue;
     User.findOne({ _id: userId })
       .populate({
         path: "folders",
@@ -31,7 +37,7 @@ router.get("/", async (req, res) => {
       });
   } catch (error) {
     console.log("There was an error");
-    res.send("no uid");
+    res.send("error");
     console.log(error);
   }
 });
