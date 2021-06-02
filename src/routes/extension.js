@@ -9,6 +9,7 @@ const router = express.Router();
 
 router.post("/", async (req, res) => {
   const data = Object.keys(req.body)[0];
+  console.log(data);
   const obj = JSON.parse(data);
   console.log(obj);
   const cookieVal = obj.cookie;
