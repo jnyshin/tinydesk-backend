@@ -10,6 +10,7 @@ router.get("/", async (req, res) => {
     const cookieValue = cookie.parse(req.headers.cookie)[
       process.env.COOKIE_NAME
     ];
+    console.log(cookieValue);
     req.session.cookieVal = cookieValue;
     User.findOne({ _id: userId })
       .populate({
