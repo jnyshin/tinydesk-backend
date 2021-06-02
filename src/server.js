@@ -71,7 +71,6 @@ app.use(
       sameSite: process.env.NODE_ENV === "production" ? "none" : "",
     },
     store: sessionStore,
-    
   })
 );
 
@@ -92,7 +91,7 @@ app.use("/home/folders/", bookmarkRouter);
 app.use("/home/background/", backgroundRouter);
 app.use("/home/account/", accountRouter);
 app.use("/home/calendar", calendarRouter);
-app.use("/test", testRouter);
+app.use("/extension/", testRouter);
 //code to get thumbnail image of bookmark
 app.post("/bookmark", async (req, res) => {
   try {
