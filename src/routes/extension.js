@@ -15,14 +15,23 @@ router.post("/", async (req, res) => {
   console.log(obj);
   const cookieVal = obj.cookie;
   const { url, title, color } = obj.data;
-  var thumbnail = "";
+
+  const thumbnails = [
+    "https://res.cloudinary.com/commandt/image/upload/v1622724485/6_swmitf.png",
+    "https://res.cloudinary.com/commandt/image/upload/v1622724486/1_gbw5js.png",
+    "https://res.cloudinary.com/commandt/image/upload/v1622724485/2_dzq3ab.png",
+    "https://res.cloudinary.com/commandt/image/upload/v1622724485/7_kjri0t.png",
+    "https://res.cloudinary.com/commandt/image/upload/v1622724485/4_k8qnmd.png",
+    "https://res.cloudinary.com/commandt/image/upload/v1622724485/3_nwf6nx.png",
+    "https://res.cloudinary.com/commandt/image/upload/v1622724485/5_fdgne3.png",
+  ];
+  const rand = Math.floor(Math.random() * 7);
+  var thumbnail = thumbnails[rand];
 
   await getFavicons(url)
     .then((faviconData) => {
       console.log(faviconData);
-      if (faviconData.icons.length === 0) {
-        thumbnail = "";
-      } else {
+      if (faviconData.icons.length !== 0) {
         thumbnail = faviconData.icons[faviconData.icons.length - 1].src;
       }
     })

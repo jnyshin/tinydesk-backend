@@ -6,35 +6,41 @@ const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    const userId = req.user._id;
-    const cookieValue = cookie.parse(req.headers.cookie)[
-      process.env.COOKIE_NAME
-    ];
-    console.log(cookieValue);
-    req.session.cookieVal = cookieValue;
-    User.findOne({ _id: userId })
-      .populate({
-        path: "folders",
-        model: "Folder",
-        populate: {
-          path: "bookmarks",
-          model: "Bookmark",
-        },
-      })
-      .populate("notes")
-      .populate({
-        path: "todolists",
-        model: "Todolist",
-        populate: { path: "todos", model: "Todo" },
-      })
-      .populate("events")
-      .exec((err, doc) => {
-        if (err) throw err;
-        if (doc) {
-          console.log(doc);
-          res.send(doc);
-        }
-      });
+    if (!req.user) {
+      res.send("no uid");
+    } else {
+      const userId = req.user._id;
+      console.log(userId);
+      const cookieValue = cookie.parse(req.headers.cookie)[
+        process.env.COOKIE_NAME
+      ];
+
+      console.log(cookieValue);
+      req.session.cookieVal = cookieValue;
+      User.findOne({ _id: userId })
+        .populate({
+          path: "folders",
+          model: "Folder",
+          populate: {
+            path: "bookmarks",
+            model: "Bookmark",
+          },
+        })
+        .populate("notes")
+        .populate({
+          path: "todolists",
+          model: "Todolist",
+          populate: { path: "todos", model: "Todo" },
+        })
+        .populate("events")
+        .exec((err, doc) => {
+          if (err) throw err;
+          if (doc) {
+            console.log(doc);
+            res.send(doc);
+          }
+        });
+    }
   } catch (error) {
     console.log("There was an error");
     res.send("error");
