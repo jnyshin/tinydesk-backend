@@ -58,25 +58,6 @@ router.delete("/", (req, res) => {
     );
   }
   res.send("completed");
-  // const ids = req.body.removelist;
-  // console.log("got this todo's id: ", todoId);
-  // Todo.deleteMany({ _id: { $in: ids } }, async (err, doc) => {
-  //   if (err) throw err;
-  //   if (doc) {
-  //     console.log(doc);
-  //   }
-  // });
-  // //Changed tmp._id
-  // Todolist.updateOne(
-  //   { _id: todolistId },
-  //   { $pull: { todos: { $in: removelist } } },
-  //   async (err, doc) => {
-  //     if (err) throw err;
-  //     if (doc) {
-  //       console.log("deleted from todolist ", todolistId);
-  //       res.send(doc);
-  //     }
-  //   }
 });
 
 // @desc    Change todo name
