@@ -12,7 +12,9 @@ const router = express.Router();
 // @desc    Add todo
 // @route   POST /home/users/todos
 router.post("/", (req, res) => {
+
   const todolistId = req.body._id;
+
   const newTodo = new Todo({ title: req.body.title, isComplete: false });
   newTodo.save();
   const newId = newTodo._id;
@@ -34,8 +36,6 @@ router.post("/", (req, res) => {
 // @route   DELETE /home/users/<String: username>/todolists/<String: todolistId>/todos/<String: todoId>
 router.delete("/", (req, res) => {
   //changed from const tmp = req.session.user
-  //const todolistId = req.body._id;
-  //const todoId = req.body.removeId;
   const removelists = req.body.removelist;
   for (list of removelists) {
     const todolistId = list._id;
@@ -58,6 +58,7 @@ router.delete("/", (req, res) => {
     );
   }
   res.send("completed");
+
 });
 
 // @desc    Change todo name
