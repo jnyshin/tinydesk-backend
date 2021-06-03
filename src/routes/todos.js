@@ -12,7 +12,9 @@ const router = express.Router();
 // @desc    Add todo
 // @route   POST /home/users/todos
 router.post("/", (req, res) => {
-  const todolistId = req.body._id; 
+
+  const todolistId = req.body._id;
+
   const newTodo = new Todo({ title: req.body.title, isComplete: false });
   newTodo.save();
   const newId = newTodo._id;
@@ -34,26 +36,29 @@ router.post("/", (req, res) => {
 // @route   DELETE /home/users/<String: username>/todolists/<String: todolistId>/todos/<String: todoId>
 router.delete("/", (req, res) => {
   //changed from const tmp = req.session.user
-  const todolistId = req.body._id;
-  const todoId = req.body.removeId;
-  console.log("got this todo's id: ", todoId);
-  Todo.deleteOne({ _id: todoId }, async (err, doc) => {
-    if (err) throw err;
-    if (doc) {
-      console.log(doc);
-    }
-  });
-  //Changed tmp._id
-  Todolist.updateOne(
-    { _id: todolistId },
-    { $pull: { todo: todoId } },
-    async (err, doc) => {
+  const removelists = req.body.removelist;
+  for (list of removelists) {
+    const todolistId = list._id;
+    const todos = list.todos;
+    Todo.deleteMany({ _id: { $in: todos } }, async (err, doc) => {
       if (err) throw err;
       if (doc) {
-        res.send(doc);
+        console.log(doc);
       }
-    }
-  );
+    });
+    Todolist.updateOne(
+      { _id: todolistId },
+      { $pull: { todos: { $in: todos } } },
+      async (err, doc) => {
+        if (err) throw err;
+        if (doc) {
+          console.log("deleted from todolist ", todolistId);
+        }
+      }
+    );
+  }
+  res.send("completed");
+
 });
 
 // @desc    Change todo name
