@@ -25,20 +25,27 @@ router.post("/signup", (req, res) => {
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
         //make an initial bookmark
         const newBookmark = new Bookmark({
-          title: "Command T Repository",
-          url: "https://github.com/janarosmonaliev/project-416",
-          color: "green",
-          thumbnail:
-            "https://github.githubassets.com/apple-touch-icon-180x180.png",
+          title: "Google",
+          url: "https://www.google.com",
+          color: "clear",
+          thumbnail: "https://www.google.com/favicon.ico",
         });
+        const newBookmarkApple = new Bookmark({
+          title: "Apple",
+          url: "https://www.apple.com",
+          color: "clear",
+          thumbnail: "https://www.apple.com/favicon.ico",
+        });
+
         await newBookmark.save();
+        await newBookmarkApple.save();
         //make initial todo
         const newTodo = new Todo({ title: "New Todo", isComplete: false });
         await newTodo.save();
         //make an initial folder
         const newFolder = new Folder({
           title: "New Folder",
-          bookmarks: [newBookmark._id],
+          bookmarks: [newBookmark._id, newBookmarkApple._id],
         });
         await newFolder.save();
         //make an initial todolist
@@ -62,8 +69,7 @@ router.post("/signup", (req, res) => {
           folders: [newFolder._id],
           backgroundImg: {
             unsplashID: "pic1",
-            url:
-              "https://images.unsplash.com/photo-1481414981591-5732874c7193?crop=entropy&cs=srgb&fm=jpg&ixid=MnwyMjAyNzR8MHwxfHNlYXJjaHw1fHxvcmFuZ2V8ZW58MHwwfHx8MTYxODU1NjAxNQ&ixlib=rb-1.2.1&q=85",
+            url: "https://images.unsplash.com/photo-1481414981591-5732874c7193?crop=entropy&cs=srgb&fm=jpg&ixid=MnwyMjAyNzR8MHwxfHNlYXJjaHw1fHxvcmFuZ2V8ZW58MHwwfHx8MTYxODU1NjAxNQ&ixlib=rb-1.2.1&q=85",
             author: "someone",
           },
           name: req.body.name,
@@ -120,6 +126,7 @@ router.get(
 router.get("/logout", function (req, res) {
   try {
     req.logout();
+    req.session.destroy();
     res.send("Successful logout");
   } catch (error) {
     console.log("There was an error");
