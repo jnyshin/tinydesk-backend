@@ -20,7 +20,7 @@ router.post("/", async (req, res) => {
   await getFavicons(url)
     .then((faviconData) => {
       console.log(faviconData);
-      if (faviconData.icons[0].src === undefined) {
+      if (faviconData.icons.length === 0) {
         thumbnail = "";
       } else {
         thumbnail = faviconData.icons[faviconData.icons.length - 1].src;
