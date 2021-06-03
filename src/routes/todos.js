@@ -12,7 +12,7 @@ const router = express.Router();
 // @desc    Add todo
 // @route   POST /home/users/todos
 router.post("/", (req, res) => {
-  const todolistId = req.body._id; 
+  const todolistId = req.body._id;
   const newTodo = new Todo({ title: req.body.title, isComplete: false });
   newTodo.save();
   const newId = newTodo._id;
@@ -46,10 +46,11 @@ router.delete("/", (req, res) => {
   //Changed tmp._id
   Todolist.updateOne(
     { _id: todolistId },
-    { $pull: { todo: todoId } },
+    { $pull: { todos: todoId } },
     async (err, doc) => {
       if (err) throw err;
       if (doc) {
+        console.log("deleted from todolist ", todolistId);
         res.send(doc);
       }
     }
