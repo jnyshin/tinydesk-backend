@@ -17,13 +17,18 @@ router.post("/", async (req, res) => {
   const { url, title, color } = obj.data;
   var thumbnail = "";
 
-  await getFavicons(url).then((faviconData) => {
-    if (faviconData.icons[0].src === undefined) {
-      thumbnail = "";
-    } else {
-      thumbnail = faviconData.icons[faviconData.icons.length - 1].src;
-    }
-  });
+  await getFavicons(url)
+    .then((faviconData) => {
+      console.log(faviconData);
+      if (faviconData.icons[0].src === undefined) {
+        thumbnail = "";
+      } else {
+        thumbnail = faviconData.icons[faviconData.icons.length - 1].src;
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+    });
   try {
     Session.findOne({ "session.cookieVal": cookieVal }, async (err, doc) => {
       if (err) console.error(err);
