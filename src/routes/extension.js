@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const User = require("../schemas/user");
 const Folder = require("../schemas/folder_db");
 const Bookmark = require("../schemas/bookmark_db");
+const getFavicons = require("get-website-favicon");
 //Router
 const router = express.Router();
 
@@ -14,7 +15,15 @@ router.post("/", async (req, res) => {
   console.log(obj);
   const cookieVal = obj.cookie;
   const { url, title, color } = obj.data;
+  var thumbnail = "";
 
+  await getFavicons(url).then((faviconData) => {
+    if (faviconData.icons[0].src === undefined) {
+      thumbnail = "";
+    } else {
+      thumbnail = faviconData.icons[faviconData.icons.length - 1].src;
+    }
+  });
   try {
     Session.findOne({ "session.cookieVal": cookieVal }, async (err, doc) => {
       if (err) console.error(err);
@@ -30,7 +39,7 @@ router.post("/", async (req, res) => {
                 title: title,
                 url: url,
                 color: color,
-                thumbnail: "",
+                thumbnail: thumbnail,
               });
               newBookmark.save();
               const newId = newBookmark._id;
