@@ -12,7 +12,6 @@ const router = express.Router();
 // @desc    Add todo
 // @route   POST /home/users/todos
 router.post("/", (req, res) => {
-
   const todolistId = req.body._id;
 
   const newTodo = new Todo({ title: req.body.title, isComplete: false });
@@ -58,7 +57,6 @@ router.delete("/", (req, res) => {
     );
   }
   res.send("completed");
-
 });
 
 // @desc    Change todo name
@@ -89,7 +87,7 @@ router.put("/order", (req, res) => {
   //remove the original
   Todolist.updateOne(
     { _id: todolistId },
-    { $pull: { todo: todoId } },
+    { $pull: { todos: todoId } },
     async (err, doc) => {
       if (err) throw err;
       if (doc) {
@@ -99,13 +97,13 @@ router.put("/order", (req, res) => {
       //put the todolist into new index position
       Todolist.updateOne(
         { _id: todolistId },
-        { $push: { todo: { $each: [todoId], $position: newIndex } } },
+        { $push: { todos: { $each: [todoId], $position: newIndex } } },
         async (err, doc) => {
           if (err) throw err;
           if (doc) {
             //User.save();
-            console.log("todolist pushed into ", todoListId);
-            res.send();
+            console.log("todolist pushed into ", todolistId);
+            res.send("completed");
           }
         }
       );
