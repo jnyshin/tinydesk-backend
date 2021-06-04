@@ -2,61 +2,49 @@ const express = require("express");
 const mongoose = require("mongoose");
 const Folder = require("../schemas/folder_db");
 const Bookmark = require("../schemas/bookmark_db");
-const got = require("got");
-const pickFn = (sizes, pickDefault) => {
-  const appleTouchIcon = sizes.find((item) => item.rel.includes("apple"));
-  console.log(appleTouchIcon);
-  return appleTouchIcon || pickDefault(sizes);
-};
-const metascraper = require("metascraper")([
-  require("metascraper-logo-favicon")({
-    pickFn,
-  }),
-]);
+const getFavicons = require("get-website-favicon");
 
 const router = express.Router();
-
 // @desc    Add a bookmark
 // @route   POST /bookmarks
-router.post("/", async (req, res, next) => {
+router.post("/", async (req, res) => {
   // code here
   var thumbnail = req.body.thumbnail;
-
-  (async () => {
-    try {
-      const { body: html, url } = await got(req.body.url);
-      const metadata = await metascraper({ html, url });
-      if (metadata.logo != undefined) {
-        thumbnail = metadata.logo;
+  await getFavicons(req.body.url)
+    .then((faviconData) => {
+      console.log(faviconData);
+      if (faviconData.icons.length !== 0) {
+        thumbnail = faviconData.icons[faviconData.icons.length - 1].src;
       }
-    } catch (err) {
+    })
+    .catch((err) => {
       console.error(err);
-    }
-    const folderId = req.body._id;
-    const newBookmark = new Bookmark({
-      title: req.body.title,
-      url: req.body.url,
-      color: req.body.color,
-      thumbnail: thumbnail,
     });
-    newBookmark.save();
-    const newId = newBookmark._id;
-    Folder.updateOne(
-      { _id: folderId },
-      { $push: { bookmarks: newId } },
-      async (err, doc) => {
-        if (err) console.error(err);
-        if (doc) {
-          console.log("New Bookmark's id is", newId);
-          const data = {
-            newId: newId,
-            thumbnail: thumbnail,
-          };
-          res.send(data);
-        }
+
+  const folderId = req.body._id;
+  const newBookmark = new Bookmark({
+    title: req.body.title,
+    url: req.body.url,
+    color: req.body.color,
+    thumbnail: thumbnail,
+  });
+  newBookmark.save();
+  const newId = newBookmark._id;
+  Folder.updateOne(
+    { _id: folderId },
+    { $push: { bookmarks: newId } },
+    async (err, doc) => {
+      if (err) console.error(err);
+      if (doc) {
+        console.log("New Bookmark's id is", newId);
+        const data = {
+          newId: newId,
+          thumbnail: thumbnail,
+        };
+        res.send(data);
       }
-    );
-  })();
+    }
+  );
 });
 
 // @desc    Remove a bookmark
