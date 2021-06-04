@@ -109,7 +109,7 @@ module.exports = function () {
               //make an initial note
               const newNote = new Note({
                 title: "New Note",
-                content: "Welcome to Command T!",
+                content: "{\"blocks\":[{\"key\":\"csign\",\"text\":\"Welcome to Command T!\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
               });
               await newNote.save();
               // ------------
