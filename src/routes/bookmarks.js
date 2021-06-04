@@ -111,17 +111,7 @@ router.put("/", async (req, res) => {
   const bookmarkId = mongoose.Types.ObjectId(req.body._id);
 
   console.log("Which bookmark to update in back: ", bookmarkId);
-  var thumbnail = req.body.thumbnail;
-  await getFavicons(req.body.url)
-    .then((faviconData) => {
-      console.log(faviconData);
-      if (faviconData.icons.length !== 0) {
-        thumbnail = faviconData.icons[faviconData.icons.length - 1].src;
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+
   Bookmark.updateOne(
     { _id: bookmarkId },
     {
@@ -129,7 +119,7 @@ router.put("/", async (req, res) => {
         title: req.body.title,
         url: req.body.url,
         color: req.body.color,
-        thumbnail: thumbnail,
+        thumbnail: req.body.thumbnail,
       },
     },
     async (err, doc) => {
