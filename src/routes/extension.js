@@ -19,10 +19,7 @@ const metascraper = require("metascraper")([
 const router = express.Router();
 
 router.post("/", async (req, res) => {
-  const data = Object.keys(req.body)[0];
-  console.log(data);
-  const obj = JSON.parse(data);
-  console.log(obj);
+  const obj = req.body;
   const cookieVal = obj.cookie;
 
   const thumbnails = [
@@ -50,6 +47,7 @@ router.post("/", async (req, res) => {
       Session.findOne({ "session.cookieVal": cookieVal }, async (err, doc) => {
         if (err) console.error(err);
         else {
+          console.log(doc);
           const passportId = mongoose.Types.ObjectId(doc.session.passport.user);
           User.findOne({ _id: passportId })
             .populate("folders")
