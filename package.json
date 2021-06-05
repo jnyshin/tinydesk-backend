@@ -1,0 +1,55 @@
+{
+  "name": "cse416-commandt-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Our front-end repository is at here [project-416](https://github.com/janarosmonaliev/project-416).",
+  "main": "server.js",
+  "engines": {
+    "node": "12.18.3"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jnyshin/cse416-commandt-backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jnyshin/cse416-commandt-backend/issues"
+  },
+  "homepage": "https://github.com/jnyshin/cse416-commandt-backend#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "connect-mongo": "^4.4.1",
+    "cookie": "^0.4.1",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "dotenv": "^9.0.2",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "get-website-favicon": "0.0.7",
+    "mongoose": "^5.12.9",
+    "passport": "^0.4.1",
+    "passport-google-oauth20": "^2.0.0",
+    "passport-local": "^1.0.0"
+  }
+}
