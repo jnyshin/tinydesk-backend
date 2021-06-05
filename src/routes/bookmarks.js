@@ -2,10 +2,16 @@ const express = require("express");
 const mongoose = require("mongoose");
 const Folder = require("../schemas/folder_db");
 const Bookmark = require("../schemas/bookmark_db");
-const metascraper = require("metascraper")([
-  require("metascraper-logo-favicon")(),
-]);
 const got = require("got");
+const pickFn = (sizes, pickDefault) => {
+  const appleTouchIcon = sizes.find((item) => item.rel.includes("apple"));
+  return appleTouchIcon || pickDefault(sizes);
+};
+const metascraper = require("metascraper")([
+  require("metascraper-logo-favicon")({
+    pickFn,
+  }),
+]);
 const router = express.Router();
 
 // @desc    Add a bookmark
@@ -16,7 +22,11 @@ router.post("/", async (req, res) => {
   try {
     const { html, url } = await got(req.body.url);
     const metadata = await metascraper({ html, url });
-    thumbnail = metadata.logo;
+    console.log(metadata);
+    if (metadata.logo !== null) {
+      thumbnail = metadata.logo;
+      console.log(metadata.logo);
+    }
   } catch (err) {
     console.error(err);
   }
