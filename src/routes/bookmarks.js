@@ -2,20 +2,9 @@ const express = require("express");
 const mongoose = require("mongoose");
 const Folder = require("../schemas/folder_db");
 const Bookmark = require("../schemas/bookmark_db");
-const got = require("got");
-const pickFn = (sizes, pickDefault) => {
-  const appleTouchIcon = sizes.find((item) => item.rel.includes("apple"));
-  console.log(appleTouchIcon);
-  return appleTouchIcon || pickDefault(sizes);
-};
-const metascraper = require("metascraper")([
-  require("metascraper-logo-favicon")({
-    pickFn,
-  }),
-]);
+const getFavicons = require("get-website-favicon");
 
 const router = express.Router();
-
 // @desc    Add a bookmark
 // @route   POST /bookmarks
 router.post("/", async (req, res) => {
@@ -123,7 +112,17 @@ router.put("/", async (req, res) => {
   const bookmarkId = mongoose.Types.ObjectId(req.body._id);
 
   console.log("Which bookmark to update in back: ", bookmarkId);
-
+  var thumbnail = req.body.thumbnail;
+  await getFavicons(req.body.url)
+    .then((faviconData) => {
+      console.log(faviconData);
+      if (faviconData.icons.length !== 0) {
+        thumbnail = faviconData.icons[faviconData.icons.length - 1].src;
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+    });
   Bookmark.updateOne(
     { _id: bookmarkId },
     {
@@ -131,7 +130,7 @@ router.put("/", async (req, res) => {
         title: req.body.title,
         url: req.body.url,
         color: req.body.color,
-        thumbnail: req.body.thumbnail,
+        thumbnail: thumbnail,
       },
     },
     async (err, doc) => {
