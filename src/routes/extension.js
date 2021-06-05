@@ -34,7 +34,7 @@ router.post("/", async (req, res) => {
   var thumbnail = thumbnails[rand];
   (async () => {
     try {
-      const { body: html, url } = await got(obj.data.url);
+      const { html, url } = await got(obj.data.url);
       const metadata = await metascraper({ html, url });
       if (metadata.logo !== null) {
         thumbnail = metadata.logo;
