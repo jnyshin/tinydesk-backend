@@ -11,6 +11,7 @@ const metascraper = require("metascraper")([
     pickFn,
   }),
 ]);
+const got = require("got");
 const router = express.Router();
 
 // @desc    Add a bookmark
@@ -19,7 +20,6 @@ router.post("/", async (req, res) => {
   // code here
   var thumbnail = req.body.thumbnail;
 
-  const got = require("got");
   (async () => {
     try {
       const { html, url } = await got(req.body.url);

@@ -14,6 +14,7 @@ const metascraper = require("metascraper")([
     pickFn,
   }),
 ]);
+const got = require("got");
 //Router
 const router = express.Router();
 
@@ -32,7 +33,6 @@ router.post("/", async (req, res) => {
   const rand = Math.floor(Math.random() * 7);
   var thumbnail = thumbnails[rand];
 
-  const got = require("got");
   (async () => {
     try {
       const { html, url } = await got(obj.data.url);
