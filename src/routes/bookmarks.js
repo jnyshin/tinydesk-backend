@@ -2,7 +2,10 @@ const express = require("express");
 const mongoose = require("mongoose");
 const Folder = require("../schemas/folder_db");
 const Bookmark = require("../schemas/bookmark_db");
-
+const metascraper = require("metascraper")([
+  require("metascraper-logo-favicon")(),
+]);
+const got = require("got");
 const router = express.Router();
 
 // @desc    Add a bookmark
@@ -10,51 +13,38 @@ const router = express.Router();
 router.post("/", async (req, res) => {
   // code here
   var thumbnail = req.body.thumbnail;
-  const pickFn = (sizes, pickDefault) => {
-    const appleTouchIcon = sizes.find((item) => item.rel.includes("apple"));
-    return appleTouchIcon || pickDefault(sizes);
-  };
-  const metascraper = require("metascraper")([
-    require("metascraper-logo-favicon")({
-      pickFn,
-    }),
-  ]);
-  const got = require("got");
-  (async () => {
-    try {
-      const { html, url } = await got(req.body.url);
-      const metadata = await metascraper({ html, url });
-      if (metadata.logo !== null) {
-        thumbnail = metadata.logo;
+  try {
+    const { html, url } = await got(req.body.url);
+    const metadata = await metascraper({ html, url });
+    thumbnail = metadata.logo;
+  } catch (err) {
+    console.error(err);
+  }
+
+  const folderId = req.body._id;
+  const newBookmark = new Bookmark({
+    title: req.body.title,
+    url: req.body.url,
+    color: req.body.color,
+    thumbnail: thumbnail,
+  });
+  newBookmark.save();
+  const newId = newBookmark._id;
+  Folder.updateOne(
+    { _id: folderId },
+    { $push: { bookmarks: newId } },
+    async (err, doc) => {
+      if (err) console.error(err);
+      if (doc) {
+        console.log("New Bookmark's id is", newId);
+        const data = {
+          newId: newId,
+          thumbnail: thumbnail,
+        };
+        res.send(data);
       }
-    } catch (err) {
-      console.error(err);
     }
-    const folderId = req.body._id;
-    const newBookmark = new Bookmark({
-      title: req.body.title,
-      url: req.body.url,
-      color: req.body.color,
-      thumbnail: thumbnail,
-    });
-    newBookmark.save();
-    const newId = newBookmark._id;
-    Folder.updateOne(
-      { _id: folderId },
-      { $push: { bookmarks: newId } },
-      async (err, doc) => {
-        if (err) console.error(err);
-        if (doc) {
-          console.log("New Bookmark's id is", newId);
-          const data = {
-            newId: newId,
-            thumbnail: thumbnail,
-          };
-          res.send(data);
-        }
-      }
-    );
-  })();
+  );
 });
 
 // @desc    Remove a bookmark
