@@ -2,9 +2,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const Folder = require("../schemas/folder_db");
 const Bookmark = require("../schemas/bookmark_db");
-const getFavicons = require("get-website-favicon");
-
 const router = express.Router();
+const getFavicons = require("get-website-favicon");
 // @desc    Add a bookmark
 // @route   POST /bookmarks
 router.post("/", async (req, res) => {

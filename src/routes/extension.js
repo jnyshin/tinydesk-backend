@@ -4,17 +4,13 @@ const mongoose = require("mongoose");
 const User = require("../schemas/user");
 const Folder = require("../schemas/folder_db");
 const Bookmark = require("../schemas/bookmark_db");
+const cookie = require("cookie");
 const getFavicons = require("get-website-favicon");
 //Router
 const router = express.Router();
 
 router.post("/", async (req, res) => {
-  const data = Object.keys(req.body)[0];
-  console.log(data);
-  const obj = JSON.parse(data);
-  console.log(obj);
-  const cookieVal = obj.cookie;
-  const { url, title, color } = obj.data;
+  const obj = req.body;
 
   const thumbnails = [
     "https://res.cloudinary.com/commandt/image/upload/v1622724485/6_swmitf.png",
@@ -28,7 +24,9 @@ router.post("/", async (req, res) => {
   const rand = Math.floor(Math.random() * 7);
   var thumbnail = thumbnails[rand];
 
-  await getFavicons(url)
+  const cookieValue = cookie.parse(req.headers.cookie)[process.env.COOKIE_NAME];
+  console.log(cookieValue);
+  await getFavicons(req.body.url)
     .then((faviconData) => {
       console.log(faviconData);
       if (faviconData.icons.length !== 0) {
@@ -39,7 +37,7 @@ router.post("/", async (req, res) => {
       console.error(err);
     });
   try {
-    Session.findOne({ "session.cookieVal": cookieVal }, async (err, doc) => {
+    Session.findOne({ "session.cookieVal": cookieValue }, async (err, doc) => {
       if (err) console.error(err);
       else {
         const passportId = mongoose.Types.ObjectId(doc.session.passport.user);
@@ -50,9 +48,9 @@ router.post("/", async (req, res) => {
             else {
               const folderId = doc.folders[0]._id;
               const newBookmark = new Bookmark({
-                title: title,
-                url: url,
-                color: color,
+                title: obj.data.title,
+                url: obj.data.url,
+                color: obj.data.color,
                 thumbnail: thumbnail,
               });
               newBookmark.save();
