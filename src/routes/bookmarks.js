@@ -2,7 +2,15 @@ const express = require("express");
 const mongoose = require("mongoose");
 const Folder = require("../schemas/folder_db");
 const Bookmark = require("../schemas/bookmark_db");
-
+const pickFn = (sizes, pickDefault) => {
+  const appleTouchIcon = sizes.find((item) => item.rel.includes("apple"));
+  return appleTouchIcon || pickDefault(sizes);
+};
+const metascraper = require("metascraper")([
+  require("metascraper-logo-favicon")({
+    pickFn,
+  }),
+]);
 const router = express.Router();
 
 // @desc    Add a bookmark
@@ -10,15 +18,7 @@ const router = express.Router();
 router.post("/", async (req, res) => {
   // code here
   var thumbnail = req.body.thumbnail;
-  const pickFn = (sizes, pickDefault) => {
-    const appleTouchIcon = sizes.find((item) => item.rel.includes("apple"));
-    return appleTouchIcon || pickDefault(sizes);
-  };
-  const metascraper = require("metascraper")([
-    require("metascraper-logo-favicon")({
-      pickFn,
-    }),
-  ]);
+
   const got = require("got");
   (async () => {
     try {
