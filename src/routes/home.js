@@ -10,12 +10,9 @@ router.get("/", async (req, res) => {
       res.send("no uid");
     } else {
       const userId = req.user._id;
-      console.log(userId);
       const cookieValue = cookie.parse(req.headers.cookie)[
         process.env.COOKIE_NAME
       ];
-
-      console.log(cookieValue);
       req.session.cookieVal = cookieValue;
       User.findOne({ _id: userId })
         .populate({
