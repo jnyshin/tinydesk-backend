@@ -23,72 +23,45 @@ router.post("/", async (req, res) => {
   ];
   const rand = Math.floor(Math.random() * 7);
   var thumbnail = thumbnails[rand];
-  const pickFn = (sizes, pickDefault) => {
-    const appleTouchIcon = sizes.find((item) => item.rel.includes("apple"));
-    return appleTouchIcon || pickDefault(sizes);
-  };
-  const metascraper = require("metascraper")([
-    require("metascraper-logo-favicon")({
-      pickFn,
-    }),
-  ]);
-  const got = require("got");
-  (async () => {
-    try {
-      const { html, url } = await got(obj.data.url);
-      const metadata = await metascraper({ html, url });
-      if (metadata.logo !== null) {
-        thumbnail = metadata.logo;
-      }
-    } catch (err) {
-      console.error(err);
-    }
-    const cookieValue = cookie.parse(req.headers.cookie)[
-      process.env.COOKIE_NAME
-    ];
-    console.log(cookieValue);
-    try {
-      Session.findOne(
-        { "session.cookieVal": cookieValue },
-        async (err, doc) => {
-          if (err) console.error(err);
-          else {
-            const passportId = mongoose.Types.ObjectId(
-              doc.session.passport.user
-            );
-            User.findOne({ _id: passportId })
-              .populate("folders")
-              .exec((err, doc) => {
-                if (err) console.error(err);
-                else {
-                  const folderId = doc.folders[0]._id;
-                  const newBookmark = new Bookmark({
-                    title: obj.data.title,
-                    url: obj.data.url,
-                    color: obj.data.color,
-                    thumbnail: thumbnail,
-                  });
-                  newBookmark.save();
-                  const newId = newBookmark._id;
-                  Folder.updateOne(
-                    { _id: folderId },
-                    { $push: { bookmarks: newId } },
-                    async (err, doc) => {
-                      if (err) res.send({ result: "failure" });
-                      if (doc) {
-                        res.send({ result: "success" });
-                      }
-                    }
-                  );
-                }
+
+  const cookieValue = cookie.parse(req.headers.cookie)[process.env.COOKIE_NAME];
+  console.log(cookieValue);
+  try {
+    Session.findOne({ "session.cookieVal": cookieValue }, async (err, doc) => {
+      if (err) console.error(err);
+      else {
+        const passportId = mongoose.Types.ObjectId(doc.session.passport.user);
+        User.findOne({ _id: passportId })
+          .populate("folders")
+          .exec((err, doc) => {
+            if (err) console.error(err);
+            else {
+              const folderId = doc.folders[0]._id;
+              const newBookmark = new Bookmark({
+                title: obj.data.title,
+                url: obj.data.url,
+                color: obj.data.color,
+                thumbnail: thumbnail,
               });
-          }
-        }
-      );
-    } catch (error) {
-      res.send({ result: "not login" });
-    }
-  })();
+              newBookmark.save();
+              const newId = newBookmark._id;
+              Folder.updateOne(
+                { _id: folderId },
+                { $push: { bookmarks: newId } },
+                async (err, doc) => {
+                  if (err) res.send({ result: "failure" });
+                  if (doc) {
+                    res.send({ result: "success" });
+                  }
+                }
+              );
+            }
+          });
+      }
+    });
+  } catch (error) {
+    res.send({ result: "not login" });
+  }
 });
 
 module.exports = router;
