@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
 
   const cookieValue = cookie.parse(req.headers.cookie)[process.env.COOKIE_NAME];
   console.log(cookieValue);
-  await getFavicons(req.body.url)
+  await getFavicons(obj.data.url)
     .then((faviconData) => {
       console.log(faviconData);
       if (faviconData.icons.length !== 0) {
@@ -37,6 +37,7 @@ router.post("/", async (req, res) => {
       console.error(err);
     });
   try {
+    console.log("IN EXTENSION ");
     Session.findOne({ "session.cookieVal": cookieValue }, async (err, doc) => {
       if (err) console.error(err);
       else {
