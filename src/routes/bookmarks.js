@@ -3,37 +3,22 @@ const mongoose = require("mongoose");
 const Folder = require("../schemas/folder_db");
 const Bookmark = require("../schemas/bookmark_db");
 const router = express.Router();
-// const getFavicons = require("get-website-favicon");
-const pickFn = (sizes, pickDefault) => {
-  const appleTouchIcon = sizes.find((item) => item.rel.includes("apple"));
-  return appleTouchIcon || pickDefault(sizes);
-};
-const got = require("got");
-const metascraper = require("metascraper")([
-  require("metascraper-logo-favicon")({
-    pickFn,
-  }),
-]);
+const getFavicons = require("get-website-favicon");
 // @desc    Add a bookmark
 // @route   POST /bookmarks
 router.post("/", async (req, res) => {
   // code here
   var thumbnail = req.body.thumbnail;
-  // await getFavicons(req.body.url)
-  //   .then((faviconData) => {
-  //     console.log(faviconData);
-  //     if (faviconData.icons.length !== 0) {
-  //       thumbnail = faviconData.icons[faviconData.icons.length - 1].src;
-  //     }
-  //   })
-  //   .catch((err) => {
-  //     console.error(err);
-  //   });
-  (async () => {
-    const { body: html, url } = await got(req.body.url);
-    const metadata = await metascraper({ html, url });
-    console.log(metadata);
-  })();
+  await getFavicons(req.body.url)
+    .then((faviconData) => {
+      console.log(faviconData);
+      if (faviconData.icons.length !== 0) {
+        thumbnail = faviconData.icons[faviconData.icons.length - 1].src;
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+    });
 
   const folderId = req.body._id;
   const newBookmark = new Bookmark({
