@@ -18,7 +18,7 @@ const router = express.Router();
 
 // @desc    Add a bookmark
 // @route   POST /bookmarks
-router.post("/", async (req, res, next) => {
+router.post("/", async (req, res) => {
   // code here
   var thumbnail = req.body.thumbnail;
 
@@ -26,7 +26,7 @@ router.post("/", async (req, res, next) => {
     try {
       const { body: html, url } = await got(req.body.url);
       const metadata = await metascraper({ html, url });
-      if (metadata.logo != undefined) {
+      if (metadata.logo !== null) {
         thumbnail = metadata.logo;
       }
     } catch (err) {

@@ -24,7 +24,6 @@ router.post("/", async (req, res) => {
   const obj = JSON.parse(data);
   console.log(obj);
   const cookieVal = obj.cookie;
-  const { url, title, color } = obj.data;
 
   const thumbnails = [
     "https://res.cloudinary.com/commandt/image/upload/v1622724485/6_swmitf.png",
@@ -41,7 +40,7 @@ router.post("/", async (req, res) => {
     try {
       const { body: html, url } = await got(obj.data.url);
       const metadata = await metascraper({ html, url });
-      if (metadata.logo != undefined) {
+      if (metadata.logo !== null) {
         thumbnail = metadata.logo;
       }
     } catch (err) {
@@ -59,9 +58,9 @@ router.post("/", async (req, res) => {
               else {
                 const folderId = doc.folders[0]._id;
                 const newBookmark = new Bookmark({
-                  title: title,
-                  url: url,
-                  color: color,
+                  title: obj.data.title,
+                  url: obj.data.url,
+                  color: obj.data.color,
                   thumbnail: thumbnail,
                 });
                 newBookmark.save();
