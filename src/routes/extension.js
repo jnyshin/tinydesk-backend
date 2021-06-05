@@ -5,16 +5,7 @@ const User = require("../schemas/user");
 const Folder = require("../schemas/folder_db");
 const Bookmark = require("../schemas/bookmark_db");
 const cookie = require("cookie");
-const pickFn = (sizes, pickDefault) => {
-  const appleTouchIcon = sizes.find((item) => item.rel.includes("apple"));
-  return appleTouchIcon || pickDefault(sizes);
-};
-const metascraper = require("metascraper")([
-  require("metascraper-logo-favicon")({
-    pickFn,
-  }),
-]);
-const got = require("got");
+
 //Router
 const router = express.Router();
 
@@ -32,7 +23,16 @@ router.post("/", async (req, res) => {
   ];
   const rand = Math.floor(Math.random() * 7);
   var thumbnail = thumbnails[rand];
-
+  const pickFn = (sizes, pickDefault) => {
+    const appleTouchIcon = sizes.find((item) => item.rel.includes("apple"));
+    return appleTouchIcon || pickDefault(sizes);
+  };
+  const metascraper = require("metascraper")([
+    require("metascraper-logo-favicon")({
+      pickFn,
+    }),
+  ]);
+  const got = require("got");
   (async () => {
     try {
       const { html, url } = await got(obj.data.url);
