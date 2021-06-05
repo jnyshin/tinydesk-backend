@@ -26,6 +26,16 @@ router.post("/", async (req, res) => {
 
   const cookieValue = cookie.parse(req.headers.cookie)[process.env.COOKIE_NAME];
   console.log(cookieValue);
+  // await getFavicons(req.body.url)
+  //   .then((faviconData) => {
+  //     console.log(faviconData);
+  //     if (faviconData.icons.length !== 0) {
+  //       thumbnail = faviconData.icons[faviconData.icons.length - 1].src;
+  //     }
+  //   })
+  //   .catch((err) => {
+  //     console.error(err);
+  //   });
   try {
     Session.findOne({ "session.cookieVal": cookieValue }, async (err, doc) => {
       if (err) console.error(err);
