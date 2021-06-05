@@ -5,7 +5,6 @@ const Bookmark = require("../schemas/bookmark_db");
 const got = require("got");
 const pickFn = (sizes, pickDefault) => {
   const appleTouchIcon = sizes.find((item) => item.rel.includes("apple"));
-  console.log(appleTouchIcon);
   return appleTouchIcon || pickDefault(sizes);
 };
 const metascraper = require("metascraper")([
@@ -24,7 +23,7 @@ router.post("/", async (req, res) => {
 
   (async () => {
     try {
-      const { body: html, url } = await got(req.body.url);
+      const { html, url } = await got(req.body.url);
       const metadata = await metascraper({ html, url });
       if (metadata.logo !== null) {
         thumbnail = metadata.logo;
