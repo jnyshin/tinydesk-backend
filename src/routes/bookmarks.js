@@ -9,32 +9,36 @@ const fetchFavicons = require("@getstation/fetch-favicon").fetchFavicons;
 router.post("/", async (req, res) => {
   // code here
   var thumbnail = req.body.thumbnail;
-  await fetchFavicons(req.body.url).then((icons) => {
-    const apple = icons.filter(
-      (icon) => icon.name == "apple-touch-icon" && icon.size != null
-    );
-    const faviconsWithSize = icons.filter(
-      (icon) => icon.name == "icon" && icon.size != null
-    );
-    const favicons = icons.filter((icon) => icon.name == "icon");
-    if (apple.length !== 0) {
-      apple.sort((a, b) => {
-        if (a.size > b.size) return 1;
-        else if (a.size < b.size) return -1;
-        else return 0;
-      });
-      thumbnail = apple[apple.length - 1].href;
-    } else if (faviconsWithSize.length !== 0) {
-      faviconsWithSize.sort((a, b) => {
-        if (a.size > b.size) return 1;
-        else if (a.size < b.size) return -1;
-        else return 0;
-      });
-      thumbnail = faviconsWithSize[faviconsWithSize.length - 1].href;
-    } else if (favicons.length !== 0) {
-      thumbnail = favicons[0].href;
-    }
-  });
+  await fetchFavicons(req.body.url)
+    .then((icons) => {
+      const apple = icons.filter(
+        (icon) => icon.name == "apple-touch-icon" && icon.size != null
+      );
+      const faviconsWithSize = icons.filter(
+        (icon) => icon.name == "icon" && icon.size != null
+      );
+      const favicons = icons.filter((icon) => icon.name == "icon");
+      if (apple.length !== 0) {
+        apple.sort((a, b) => {
+          if (a.size > b.size) return 1;
+          else if (a.size < b.size) return -1;
+          else return 0;
+        });
+        thumbnail = apple[apple.length - 1].href;
+      } else if (faviconsWithSize.length !== 0) {
+        faviconsWithSize.sort((a, b) => {
+          if (a.size > b.size) return 1;
+          else if (a.size < b.size) return -1;
+          else return 0;
+        });
+        thumbnail = faviconsWithSize[faviconsWithSize.length - 1].href;
+      } else if (favicons.length !== 0) {
+        thumbnail = favicons[0].href;
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+    });
   // await getFavicons(req.body.url)
   //   .then((faviconData) => {
   //     console.log(faviconData);

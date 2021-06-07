@@ -27,36 +27,40 @@ router.post("/", async (req, res) => {
   const cookieValue = cookie.parse(req.headers.cookie)[process.env.COOKIE_NAME];
   console.log(cookieValue);
 
-  await fetchFavicons(obj.data.url).then((icons) => {
-    console.log("IN FETCHFAVICONS");
-    const apple = icons.filter(
-      (icon) => icon.name == "apple-touch-icon" && icon.size != null
-    );
-    const faviconsWithSize = icons.filter(
-      (icon) => icon.name == "icon" && icon.size != null
-    );
-    const favicons = icons.filter((icon) => icon.name == "icon");
-    if (apple.length !== 0) {
-      apple.sort((a, b) => {
-        if (a.size > b.size) return 1;
-        else if (a.size < b.size) return -1;
-        else return 0;
-      });
-      thumbnail = apple[apple.length - 1].href;
-    } else if (faviconsWithSize.length !== 0) {
-      faviconsWithSize.sort((a, b) => {
-        if (a.size > b.size) return 1;
-        else if (a.size < b.size) return -1;
-        else return 0;
-      });
-      thumbnail = faviconsWithSize[faviconsWithSize.length - 1].href;
-    } else if (favicons.length !== 0) {
-      thumbnail = favicons[0].href;
-    }
-    console.log("APPLE", apple);
-    console.log("faviconsWithSize", faviconsWithSize);
-    console.log("favicons", favicons);
-  });
+  await fetchFavicons(obj.data.url)
+    .then((icons) => {
+      console.log("IN FETCHFAVICONS");
+      const apple = icons.filter(
+        (icon) => icon.name == "apple-touch-icon" && icon.size != null
+      );
+      const faviconsWithSize = icons.filter(
+        (icon) => icon.name == "icon" && icon.size != null
+      );
+      const favicons = icons.filter((icon) => icon.name == "icon");
+      if (apple.length !== 0) {
+        apple.sort((a, b) => {
+          if (a.size > b.size) return 1;
+          else if (a.size < b.size) return -1;
+          else return 0;
+        });
+        thumbnail = apple[apple.length - 1].href;
+      } else if (faviconsWithSize.length !== 0) {
+        faviconsWithSize.sort((a, b) => {
+          if (a.size > b.size) return 1;
+          else if (a.size < b.size) return -1;
+          else return 0;
+        });
+        thumbnail = faviconsWithSize[faviconsWithSize.length - 1].href;
+      } else if (favicons.length !== 0) {
+        thumbnail = favicons[0].href;
+      }
+      console.log("APPLE", apple);
+      console.log("faviconsWithSize", faviconsWithSize);
+      console.log("favicons", favicons);
+    })
+    .catch((err) => {
+      console.error(err);
+    });
   console.log("IN EXTENSION ");
   console.log(thumbnail);
   try {
