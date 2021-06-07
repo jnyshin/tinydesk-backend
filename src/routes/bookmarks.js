@@ -3,22 +3,48 @@ const mongoose = require("mongoose");
 const Folder = require("../schemas/folder_db");
 const Bookmark = require("../schemas/bookmark_db");
 const router = express.Router();
-const getFavicons = require("get-website-favicon");
+const fetchFavicons = require("@getstation/fetch-favicon").fetchFavicons;
 // @desc    Add a bookmark
 // @route   POST /bookmarks
 router.post("/", async (req, res) => {
   // code here
   var thumbnail = req.body.thumbnail;
-  await getFavicons(req.body.url)
-    .then((faviconData) => {
-      console.log(faviconData);
-      if (faviconData.icons.length !== 0) {
-        thumbnail = faviconData.icons[faviconData.icons.length - 1].src;
-      }
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+  await fetchFavicons(req.body.url).then((icons) => {
+    const apple = icons.filter(
+      (icon) => icon.name == "apple-touch-icon" && icon.size != null
+    );
+    const faviconsWithSize = icons.filter(
+      (icon) => icon.name == "icon" && icon.size != null
+    );
+    const favicons = icons.filter((icon) => icon.name == "icon");
+    if (apple.length !== 0) {
+      apple.sort((a, b) => {
+        if (a.size > b.size) return 1;
+        else if (a.size < b.size) return -1;
+        else return 0;
+      });
+      thumbnail = apple[apple.length - 1].href;
+    } else if (faviconsWithSize.length !== 0) {
+      faviconsWithSize.sort((a, b) => {
+        if (a.size > b.size) return 1;
+        else if (a.size < b.size) return -1;
+        else return 0;
+      });
+      thumbnail = faviconsWithSize[faviconsWithSize.length - 1].href;
+    } else if (favicons.length !== 0) {
+      thumbnail = favicons[0].href;
+    }
+  });
+  // await getFavicons(req.body.url)
+  //   .then((faviconData) => {
+  //     console.log(faviconData);
+  //     if (faviconData.icons.length !== 0) {
+  //       thumbnail = faviconData.icons[faviconData.icons.length - 1].src;
+  //     }
+  //   })
+  //   .catch((err) => {
+  //     console.error(err);
+  //   });
 
   const folderId = req.body._id;
   const newBookmark = new Bookmark({
@@ -52,6 +78,17 @@ router.delete("/", (req, res) => {
   const folderId = req.body._id;
   const bookmarkId = req.body.removeId;
   console.log("got this bookmark's id: ", bookmarkId);
+  // Folder.find({ _id: folderId }, async (err, doc) => {
+  //   if (err) throw err;
+  //   else {
+  //     console.log(doc[0].bookmarks);
+  //     let bk = doc[0].bookmarks;
+  //     Bookmark.deleteMany({ _id: { $in: bk } }, async (err, doc) => {
+  //       console.log("deleted bookmarks");
+  //       resolve(true);
+  //     });
+  //   }
+  // });
   Bookmark.deleteOne({ _id: bookmarkId }, async (err, doc) => {
     if (err) console.error(err);
     if (doc) {
