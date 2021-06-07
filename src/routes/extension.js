@@ -5,7 +5,7 @@ const User = require("../schemas/user");
 const Folder = require("../schemas/folder_db");
 const Bookmark = require("../schemas/bookmark_db");
 const cookie = require("cookie");
-const getFavicons = require("get-website-favicon");
+const fetchFavicons = require("@getstation/fetch-favicon").fetchFavicons;
 //Router
 const router = express.Router();
 
@@ -26,19 +26,45 @@ router.post("/", async (req, res) => {
 
   const cookieValue = cookie.parse(req.headers.cookie)[process.env.COOKIE_NAME];
   console.log(cookieValue);
-  await getFavicons(obj.data.url)
-    .then((faviconData) => {
-      console.log(faviconData);
-      if (faviconData.icons.length !== 0) {
-        thumbnail = faviconData.icons[faviconData.icons.length - 1].src;
+
+  await fetchFavicons(obj.data.url)
+    .then((icons) => {
+      console.log("IN FETCHFAVICONS");
+      const apple = icons.filter(
+        (icon) => icon.name == "apple-touch-icon" && icon.size != null
+      );
+      const faviconsWithSize = icons.filter(
+        (icon) => icon.name == "icon" && icon.size != null
+      );
+      const favicons = icons.filter((icon) => icon.name == "icon");
+      if (apple.length !== 0) {
+        apple.sort((a, b) => {
+          if (a.size > b.size) return 1;
+          else if (a.size < b.size) return -1;
+          else return 0;
+        });
+        thumbnail = apple[apple.length - 1].href;
+      } else if (faviconsWithSize.length !== 0) {
+        faviconsWithSize.sort((a, b) => {
+          if (a.size > b.size) return 1;
+          else if (a.size < b.size) return -1;
+          else return 0;
+        });
+        thumbnail = faviconsWithSize[faviconsWithSize.length - 1].href;
+      } else if (favicons.length !== 0) {
+        thumbnail = favicons[0].href;
       }
+      console.log("APPLE", apple);
+      console.log("faviconsWithSize", faviconsWithSize);
+      console.log("favicons", favicons);
     })
     .catch((err) => {
       console.error(err);
     });
+  console.log("IN EXTENSION ");
+  console.log(thumbnail);
   try {
-    console.log("IN EXTENSION ");
-    Session.findOne({ "session.cookieVal": cookieValue }, async (err, doc) => {
+    Session.findOne({ "session.cookieVal": cookieValue }, (err, doc) => {
       if (err) console.error(err);
       else {
         const passportId = mongoose.Types.ObjectId(doc.session.passport.user);
@@ -70,7 +96,7 @@ router.post("/", async (req, res) => {
           });
       }
     });
-  } catch (error) {
+  } catch (err) {
     res.send({ result: "not login" });
   }
 });
