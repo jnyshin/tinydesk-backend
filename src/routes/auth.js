@@ -57,7 +57,8 @@ router.post("/signup", (req, res) => {
         //make an initial note
         const newNote = new Note({
           title: "New Note",
-          content: "{\"blocks\":[{\"key\":\"csign\",\"text\":\"Welcome to Command T!\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+          content:
+            '{"blocks":[{"key":"csign","text":"Welcome to Command T!","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}',
         });
         await newNote.save();
         const newUser = new User({
@@ -117,7 +118,7 @@ router.get(
   passport.authenticate("google", { failureRedirect: "/loginFailure" }),
   function (req, res) {
     // Successful authentication, redirect home.
-    return res.redirect("https://commandt.herokuapp.com/home");
+    return res.redirect("https://www.tinydesk.me/home");
   }
 );
 
