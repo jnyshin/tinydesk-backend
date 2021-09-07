@@ -15,7 +15,7 @@ let callback_url;
 if (NODE_ENV == "development") {
   callback_url = "http://localhost:4000/google/callback";
 } else {
-  callback_url = "https://commandt-backend.herokuapp.com/google/callback";
+  callback_url = "https://api.tinydesk.me/google/callback";
 }
 
 module.exports = function () {
@@ -109,7 +109,8 @@ module.exports = function () {
               //make an initial note
               const newNote = new Note({
                 title: "New Note",
-                content: "{\"blocks\":[{\"key\":\"csign\",\"text\":\"Welcome to Command T!\",\"type\":\"unstyled\",\"depth\":0,\"inlineStyleRanges\":[],\"entityRanges\":[],\"data\":{}}],\"entityMap\":{}}",
+                content:
+                  '{"blocks":[{"key":"csign","text":"Welcome to Command T!","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}',
               });
               await newNote.save();
               // ------------
