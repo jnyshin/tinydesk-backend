@@ -1,6 +1,6 @@
 const cors = require("cors");
 
-const whitelist = ["https://commandt.herokuapp.com", "http://localhost:8000"];
+const whitelist = ["https://www.tinydesk.me", "http://localhost:8000"];
 //If
 const corsOptions = {
   origin:
