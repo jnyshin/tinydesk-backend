@@ -29,7 +29,6 @@ router.post("/", async (req, res) => {
 
   await fetchFavicons(obj.data.url)
     .then((icons) => {
-      console.log("IN FETCHFAVICONS");
       const apple = icons.filter(
         (icon) => icon.name == "apple-touch-icon" && icon.size != null
       );
@@ -54,15 +53,10 @@ router.post("/", async (req, res) => {
       } else if (favicons.length !== 0) {
         thumbnail = favicons[0].href;
       }
-      console.log("APPLE", apple);
-      console.log("faviconsWithSize", faviconsWithSize);
-      console.log("favicons", favicons);
     })
     .catch((err) => {
       console.error(err);
     });
-  console.log("IN EXTENSION ");
-  console.log(thumbnail);
   try {
     Session.findOne({ "session.cookieVal": cookieValue }, (err, doc) => {
       if (err) console.error(err);

@@ -12,10 +12,10 @@ const Todo = require("../schemas/todo_db");
 const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, NODE_ENV } = process.env;
 
 let callback_url;
-if (NODE_ENV == "development") {
-  callback_url = "http://localhost:4000/google/callback";
+if (NODE_ENV == "production") {
+  callback_url = "https://api.tindyesk.me/google/callback";
 } else {
-  callback_url = "https://api.tinydesk.me/google/callback";
+  callback_url = "http://localhost:4000/google/callback";
 }
 
 module.exports = function () {

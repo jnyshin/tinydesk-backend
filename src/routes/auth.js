@@ -110,15 +110,25 @@ router.get("/loginSuccess", (req, res) => {
 // Login with Google
 router.get(
   "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
+  passport.authenticate("google", { scope: ["profile", "email"] }),
+  function (req, res) {
+    if (NODE_ENV === "production") {
+      return res.redirect("https://www.tinydesk.me/home");
+    } else {
+      return res.redirect("http://www.localhost:8000/home");
+    }
+  }
 );
 
 router.get(
   "/google/callback",
   passport.authenticate("google", { failureRedirect: "/loginFailure" }),
   function (req, res) {
-    // Successful authentication, redirect home.
-    return res.redirect("https://www.tinydesk.me/home");
+    if (NODE_ENV === "production") {
+      return res.redirect("https://www.tinydesk.me/home");
+    } else {
+      return res.redirect("http://www.localhost:8000/home");
+    }
   }
 );
 
