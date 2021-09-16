@@ -13,7 +13,7 @@ const { GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, NODE_ENV } = process.env;
 
 let callback_url;
 if (NODE_ENV == "production") {
-  callback_url = "https://api.tindyesk.me/google/callback";
+  callback_url = "https://api.tinydesk.me/google/callback";
 } else {
   callback_url = "http://localhost:4000/google/callback";
 }
