@@ -1,6 +1,6 @@
-# The Back-end Repository for Command T
-
-Our front-end repository is at here [project-416](https://github.com/janarosmonaliev/project-416).
+# The Back-end Repository for Tiny Desk
+*** Changed project name from CommandT -> Tiny Desk *** <br />
+Our front-end repository is at here [tinydesk](https://github.com/janarosmonaliev/tinydesk).
 
 ### Also, our main file is "server.js".
 
